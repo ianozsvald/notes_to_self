@@ -2,6 +2,20 @@
 
 # Python
 
+## Pandas
+
+### `groupby`
+
+Categoricals have a weird memory behaviour in 1.0 in `groupby`, must pass in `observed=True` on the `groupby` else it stalls and eats a lot of RAM: https://github.com/pandas-dev/pandas/issues/30552
+
+### `merge`
+
+Merging is the underlying operation, `df.join` is a shortcut into `merge`.
+
+### `concatenate`
+
+Has lots of options including to drop the index, `axis=1` for columnar concatenation and more.
+
 ## Argument parsing
 
 ### `argparse`
