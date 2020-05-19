@@ -61,6 +61,9 @@ Typically we'd write `pytest` to execute it, there's something weird with being 
 
 `pytest --pdb` drops into the debugger on a failure. 
 
+### `coverage`
+
+`$ coverage run -m unittest test_all.py` (or e.g. `discover` to discover all test files) writes an sqlite3 `.coverage` datafile, `$ coverage report html` generates `./htmlcov/` and `firefox htmlcov/index.html` opens the html report. Notes: https://coverage.readthedocs.io/en/coverage-5.1/
 
 ## Getting to high code quality
 
