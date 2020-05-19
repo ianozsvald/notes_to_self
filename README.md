@@ -51,4 +51,12 @@ When argument parsing it might make sense to check for the presence of specified
 
 `python -m unittest` runs all tests with autodiscovery, `python -m unittest mymodule.myclass` finds `mymodule.py` and runs the tests in `myclass`.
 
-There are some visual diffs but they're not brilliant.
+There are some visual diffs but they're not brilliant. I don't think we can invoke `pdb` on failures without writing code?
+
+### `pytest`
+
+More mature than `unittest`, doesn't need the `unittest` methods for checking same/different code and catching expected exceptions is neater. Also has plugins, syntax colouring.
+
+Typically we'd write `pytest` to execute it, there's something weird with being unable to find imported modules if `__init__.py` is (or maybe isn't) present, in which case `python -m pytest` does the job: https://stackoverflow.com/questions/41748464/pytest-cannot-import-module-while-python-can
+
+`pytest --pdb` drops into the debugger on a failure. 
