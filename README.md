@@ -60,3 +60,18 @@ More mature than `unittest`, doesn't need the `unittest` methods for checking sa
 Typically we'd write `pytest` to execute it, there's something weird with being unable to find imported modules if `__init__.py` is (or maybe isn't) present, in which case `python -m pytest` does the job: https://stackoverflow.com/questions/41748464/pytest-cannot-import-module-while-python-can
 
 `pytest --pdb` drops into the debugger on a failure. 
+
+
+## Getting to high code quality
+
+### `flake8`
+
+Lints and checks code, works in most IDEs and as a git commit hook. Can disable a line with annoying warnings using `  # NOQA` as the comment.
+
+### `pylama`
+
+Has more than `flake8`, not as widely supported (2020-05 not in Visual Code as a default linter).
+
+### `black`
+
+Highly opinionated, not necessarily "what you want" as some of the reformating is hard to read _but_ you also don't get a choice and that's a really good outcome!
