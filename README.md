@@ -49,7 +49,7 @@ When argument parsing it might make sense to check for the presence of specified
 
 ### `unittest`
 
-`python -m unittest` runs all tests with autodiscovery, `python -m unittest mymodule.myclass` finds `mymodule.py` and runs the tests in `myclass`.
+`python -m unittest` runs all tests with autodiscovery, `python -m unittest mymodule.MyClass` finds `mymodule.py` and runs the tests in `MyClass`.
 
 There are some visual diffs but they're not brilliant. I don't think we can invoke `pdb` on failures without writing code?
 
