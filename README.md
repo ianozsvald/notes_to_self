@@ -35,10 +35,20 @@ parser.add_argument('-i', '--input_filename', type=str, nargs="?",
                     ' (default: %(default)s))', # help msg 2 over lines with default
                     default=input_filename) # some default
 parser.add_argument('-v', '--version', action="store_true",
-                    help="show version (default: %(default)s)")
+                    help="show version")
 
 args = parser.parse_args()
 print("Arguments provided:", args)
 if args.version:
     print(f"Version: {__version__}")
 ```
+
+When argument parsing it might make sense to check for the presence of specified files and to `sys.exit(1)` with a message if they're missing. `argparse` can also stream `stdin` in place of named files for piped input.
+
+## Testing
+
+### `unittest`
+
+`python -m unittest` runs all tests with autodiscovery, `python -m unittest mymodule.myclass` finds `mymodule.py` and runs the tests in `myclass`.
+
+There are some visual diffs but they're not brilliant.
