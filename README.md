@@ -36,6 +36,10 @@ Probably add `dropna=False` every time (IMHO this should be the default).
 
 `df.info(memory_usage="deep")` introspects each column and counts bytes used including strings - but this can be slow on many strings (e.g. millions of rows of strings might take 1 minute).
 
+### `describe`
+
+* `ser.describe(percentiles=[0.01, 0.25, 0.5, 0.75, 0.99, 1])` add more percentiles
+
 ### `read_csv`
 
 `pd.read_csv(parse_dates=True)` will only parse index dates, instead use `parse_dates=['col1', 'col2']` to parse other cols.
@@ -43,6 +47,13 @@ Probably add `dropna=False` every time (IMHO this should be the default).
 ### display options
 
 `pd.get_option('display.max_columns')` probably 20 and `max_rows` is 60. Use `pd.set_option('display.max_columns', 100)` for more cols in e.g. `.head()`. `pd.set_option('precision', 4)`. https://pandas.pydata.org/pandas-docs/stable/user_guide/options.html#frequently-used-options
+
+## matplotlib
+
+### subplots
+
+* `fig, axs = plt.subplots(ncols=2, figsize=(8, 6))`
+
 
 ## Argument parsing
 
