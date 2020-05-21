@@ -32,6 +32,14 @@ Has lots of options including to drop the index, `axis=1` for columnar concatena
 
 Probably add `dropna=False` every time (IMHO this should be the default).
 
+### `info`
+
+`df.info(memory_usage="deep")` introspects each column and counts bytes used including strings - but this can be slow on many strings (e.g. millions of rows of strings might take 1 minute).
+
+### `read_csv`
+
+`pd.read_csv(parse_dates=True)` will only parse index dates, instead use `parse_dates=['col1', 'col2']` to parse other cols.
+
 ## Argument parsing
 
 ### `argparse`
