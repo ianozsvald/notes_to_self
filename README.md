@@ -28,6 +28,10 @@ Merging is the underlying operation, `df.join` is a shortcut into `merge`.
 
 Has lots of options including to drop the index, `axis=1` for columnar concatenation and more.
 
+### `value_counts`
+
+Probably add `dropna=False` every time (IMHO this should be the default).
+
 ## Argument parsing
 
 ### `argparse`
