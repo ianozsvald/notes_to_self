@@ -46,6 +46,10 @@ Merging is the underlying operation, `df.join` is a shortcut into `merge`.
 
 Has lots of options including to drop the index, `axis=1` for columnar concatenation and more.
 
+### `reindex`
+
+Apply a new index e.g. a series of ints to a non-contiguous existing `index`, `fill_na` defaults to `NaN`.
+
 ### `value_counts`
 
 Probably add `dropna=False` every time (IMHO this should be the default).
@@ -56,7 +60,8 @@ Probably add `dropna=False` every time (IMHO this should be the default).
 
 ### `describe`
 
-* `ser.describe(percentiles=[0.01, 0.25, 0.5, 0.75, 0.99, 1])` add more percentiles
+* `ser.describe(percentiles=[0.01, 0.25, 0.5, 0.75, 0.99, 1])` add more percentiles.
+* `df.describe().style.background_gradient(axis=0)`
 
 ### `read_csv`
 
