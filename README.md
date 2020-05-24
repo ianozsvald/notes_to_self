@@ -26,7 +26,13 @@
 
 `gpby` calls such as `mean` are delegated.
 
+`groupby` on a timeseries (e.g. day index) won't care about missing items (e.g. missing days), using `resample` for date times with a `fillna` is probably more sensible.
+
 Categoricals have a non-obvious memory behaviour in 1.0 in `groupby`, must pass in `observed=True` on the `groupby` else it stalls and eats a lot of RAM: https://github.com/pandas-dev/pandas/issues/30552 It builds the cartesian product of all possible categorical groups with the default arguments which might take some time and RAM.
+
+### `crosstab`
+
+`normalize` can take `"index"`/`0` (note not `"rows"`), `"columns"`/`1` or `"all"`/`True`, default is `False`.
 
 ### `pd.to_datetime`
 
