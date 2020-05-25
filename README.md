@@ -73,6 +73,15 @@ Probably add `dropna=False` every time (IMHO this should be the default).
 
 ## matplotlib
 
+### `subplot`
+
+`fig, ax = plt.subplots()`
+
+### Pandas `plot`
+
+Marks with x and no lines: `.plot(marker='x', linestyle=' ', ax=ax)`
+
+
 ### subplots
 
 * `fig, axs = plt.subplots(ncols=2, figsize=(8, 6))`
