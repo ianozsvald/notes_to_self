@@ -40,7 +40,9 @@ Categoricals have a non-obvious memory behaviour in 1.0 in `groupby`, must pass 
 
 ### `merge`
 
-Merging is the underlying operation, `df.join` is a shortcut into `merge`.
+Merging is the underlying operation, `df.join` is a shortcut into `merge`.  `join` merges keys on the left with the index on the right, it doesn't change the resulting index. Prefer `merge` to stay explicit.
+
+`indicator=True` adds `_merge` column with indicators like `both`. `validate='many_to_one'` validates uniqueness on the right (or left or both), raising `MergeError` if not validated.
 
 ### `concatenate`
 
