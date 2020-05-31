@@ -4,13 +4,15 @@
 
 ## Research
 
+### Getting into a new project
+
 * What's the biggest uncertainty ahead? What does it cost to solve it, what value does it bring?
 * What single thing might give us 80% of the remaining answer? Probably avoid the edge cases (document, but don't focus on them)
 
 ## Strategy
 
 * prefer who/what/why/where/when objective questions
-
+* focus on understanding the levers for highest value delivery, check for shared agreement on these (ignore low-value stuff that's cool but won't enable beneficial change)
 
 # Python
 
