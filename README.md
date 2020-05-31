@@ -134,6 +134,13 @@ Typically we'd write `pytest` to execute it, there's something weird with being 
 
 `$ coverage run -m unittest test_all.py` (or e.g. `discover` to discover all test files) writes an sqlite3 `.coverage` datafile, `$ coverage report html` generates `./htmlcov/` and `firefox htmlcov/index.html` opens the html report. Notes: https://coverage.readthedocs.io/en/coverage-5.1/
 
+## Profiling
+
+### `ipython_memory_usage`
+
+`import ipython_memory_usage; #%ipython_memory_usage_start` for cell by cell memory analysis
+
+
 ## Getting to high code quality
 
 ### `flake8`
@@ -147,3 +154,7 @@ Has more than `flake8`, not as widely supported (2020-05 not in Visual Code as a
 ### `black`
 
 Highly opinionated, not necessarily "what you want" as some of the reformating is hard to read _but_ you also don't get a choice and that's a really good outcome!
+
+### `engarde`
+
+Check dataframe cols as I go
