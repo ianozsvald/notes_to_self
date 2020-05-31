@@ -160,3 +160,13 @@ Highly opinionated, not necessarily "what you want" as some of the reformating i
 ### `engarde`
 
 Check dataframe cols as I go
+
+### `watermark`
+
+* https://github.com/rasbt/watermark
+
+```
+%load_ext watermark
+%watermark -i -v -m -p pandas,numpy,matplotlib -g -b
+# possible -iv for all imported pkg versions? try this...
+```
