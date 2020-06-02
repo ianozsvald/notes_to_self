@@ -94,6 +94,17 @@ Marks with x and no lines: `.plot(marker='x', linestyle=' ', ax=ax)`
 
 * `fig, axs = plt.subplots(ncols=2, figsize=(8, 6))`
 
+### axis labels
+
+```
+import matplotlib as mpl
+def set_commas(ax, on_x_axis=True):
+    """Add commas to e.g. 1,000,000 on axis labels"""
+    axis = ax.get_xaxis()
+    if not on_x_axis:
+        axis = ax.get_yaxis()
+    axis.set_major_formatter(mpl.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
+```
 
 ## Argument parsing
 
