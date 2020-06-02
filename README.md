@@ -87,7 +87,8 @@ Probably add `dropna=False` every time (IMHO this should be the default).
 
 ### `subplot`
 
-`fig, ax = plt.subplots()`
+* `fig, ax = plt.subplots()`
+* `fig, axs = plt.subplots(figsize=(20, 12), nrows=2, gridspec_kw={'height_ratios': [2, 1]})` 
 
 ### Pandas `plot`
 
