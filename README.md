@@ -16,6 +16,10 @@
 
 # Python
 
+## Wants
+
+* Pandas better describe - colour the percentiles, not the counts/mean/std, include 5/95% in percentiles. Add dtype description and maybe memory, not how many columns were ignored too (stick on the end maybe?)
+
 ## Pandas
 
 ### `groupby`
