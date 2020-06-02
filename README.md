@@ -173,7 +173,7 @@ Has more than `flake8`, not as widely supported (2020-05 not in Visual Code as a
 
 Highly opinionated, not necessarily "what you want" as some of the reformating is hard to read _but_ you also don't get a choice and that's a really good outcome!
 
-### `engarde`
+### `bulwark`
 
 Check dataframe cols as I go
 
