@@ -96,7 +96,7 @@ Marks with x and no lines: `.plot(marker='x', linestyle=' ', ax=ax)`
 
 ## Horiztonal lines
 
-`ax.axhlines(color='grey', linestyle='--')`
+`ax.axhline(color='grey', linestyle='--')`
 
 
 ### subplots
