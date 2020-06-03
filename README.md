@@ -94,6 +94,10 @@ Probably add `dropna=False` every time (IMHO this should be the default).
 
 Marks with x and no lines: `.plot(marker='x', linestyle=' ', ax=ax)`
 
+## Horiztonal lines
+
+`ax.axhlines(color='grey', linestyle='--')`
+
 
 ### subplots
 
