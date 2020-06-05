@@ -7,12 +7,16 @@
 ### Getting into a new project
 
 * What's the biggest uncertainty ahead? What does it cost to solve it, what value does it bring?
+  * Try to derisk the biggest/most painful uncertainties soonest
 * What single thing might give us 80% of the remaining answer? Probably avoid the edge cases (document, but don't focus on them)
+  * Identify the most valuable deliverables (most-derisking, most-value-yielding) to rank opportunities
+* Milestones - list some, note what each enables
 
 ## Strategy
 
-* prefer who/what/why/where/when objective questions
-* focus on understanding the levers for highest value delivery, check for shared agreement on these (ignore low-value stuff that's cool but won't enable beneficial change)
+* Prefer who/what/why/where/when objective questions
+* Focus on understanding the levers for highest value delivery, check for shared agreement on these (ignore low-value stuff that's cool but won't enable beneficial change)
+* Aim for frequent mini-retros to discuss "what did we learn? what shouldn't we repeat?"
 
 # Python
 
@@ -114,6 +118,8 @@ def set_commas(ax, on_x_axis=True):
         axis = ax.get_yaxis()
     axis.set_major_formatter(mpl.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
 ```
+
+* "percentage point, pp" for percentage differences https://en.wikipedia.org/wiki/Percentage_point, possibly use "proportion" in the title and aim for "%" symbol on numeric axis
 
 ## Argument parsing
 
