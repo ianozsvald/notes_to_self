@@ -79,6 +79,10 @@ Probably add `dropna=False` every time (IMHO this should be the default).
 
 `pd.read_csv(parse_dates=True)` will only parse index dates, instead use `parse_dates=['col1', 'col2']` to parse other cols.
 
+### formatting
+
+`vc.apply(lambda v: f"{v*100:.0f}%")` turn a `value_counts` into percentages like "92%"
+
 ### display options
 
 `pd.get_option('display.max_columns')` probably 20 and `max_rows` is 60. Use `pd.set_option('display.max_columns', 100)` for more cols in e.g. `.head()`. `pd.set_option('precision', 4)`. https://pandas.pydata.org/pandas-docs/stable/user_guide/options.html#frequently-used-options
