@@ -196,3 +196,9 @@ Check dataframe cols as I go
 %watermark -i -v -m -p pandas,numpy,matplotlib -g -b
 # possible -iv for all imported pkg versions? try this...
 ```
+
+# Shell
+
+## link
+
+`ln -s other_folder_file .` link the other file into this folder.
