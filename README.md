@@ -123,6 +123,13 @@ def set_commas(ax, on_x_axis=True):
     axis.set_major_formatter(mpl.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))
 ```
 
+```
+# add e.g. s for seconds labeling on tick label
+locs =ax.get_yticks()
+new_yticks=[f"{d}s" for d in locs]
+ax.set_yticklabels(new_yticks); 
+```
+
 * "percentage point, pp" for percentage differences https://en.wikipedia.org/wiki/Percentage_point, possibly use "proportion" in the title and aim for "%" symbol on numeric axis
 
 ## Argument parsing
