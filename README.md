@@ -64,7 +64,7 @@ Apply a new index e.g. a series of ints to a non-contiguous existing `index`, `f
 
 ### `value_counts`
 
-Probably add `dropna=False` every time (IMHO this should be the default).
+Probably add `dropna=False` every time _caveat_ this means we easily miss NaN values, the sanity_check is to count the results and check them against the size of the original column.
 
 ### `info`
 
