@@ -93,6 +93,14 @@ Probably add `dropna=False` every time _caveat_ this means we easily miss NaN va
 
 ## matplotlib
 
+### my style (?)
+
+```
+ax.spines['top'].set_visible(False)
+ax.spines['right'].set_visible(False)
+ax.grid(axis='x') # horizontal grid lines only
+```
+
 ### `subplot`
 
 * `fig, ax = plt.subplots()`
