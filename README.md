@@ -121,6 +121,8 @@ Marks with x and no lines: `.plot(marker='x', linestyle=' ', ax=ax)`
 
 ### limits
 
+#### symmetric limits (x and y have same range)
+
 ```
 min_val = min(ax.get_xlim()[0], ax.get_ylim()[0]
 max_val = min(ax.get_xlim()[1], ax.get_ylim()[1]
