@@ -50,7 +50,7 @@ Categoricals have a non-obvious memory behaviour in 1.0 in `groupby`, must pass 
 
 ### `cut`
 
-Pandas is closed-right by default i.e. with `right=True` (default) then bins are `(b1, b2]` (exclusive/open of left, inclusiv/closed of right: https://en.wikipedia.org/wiki/Bracket_(mathematics) ). https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.cut.html
+Pandas is closed-right by default i.e. with `right=True` (default) then bins are `(b1, b2]` (exclusive/open of left, inclusive/closed of right: https://en.wikipedia.org/wiki/Bracket_(mathematics) ). https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.cut.html
 
 ### `merge`
 
