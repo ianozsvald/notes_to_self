@@ -48,6 +48,10 @@ Categoricals have a non-obvious memory behaviour in 1.0 in `groupby`, must pass 
 
 `utc=True` will set timezone (else no tz info). Lowest valid date we can parse is circa `pd.to_datetime('1677-09-22', utc=True)` (21st will raise a `OutOfBoundsDatetime` unless `errors="ignore"` passed, if this is passed then we get a string back in place! use `coerce` to get `NaT` for invalid times) - limitations: https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#timestamp-limitations . Error handling: https://pandas.pydata.org/pandas-docs/stable/user_guide/timeseries.html#invalid-data
 
+### `cut`
+
+Pandas is closed-right by default i.e. with `right=True` (default) then bins are `(b1, b2]` (exclusive/open of left, inclusiv/closed of right: https://en.wikipedia.org/wiki/Bracket_(mathematics) ). https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.cut.html
+
 ### `merge`
 
 Merging is the underlying operation, `df.join` is a shortcut into `merge`.  `join` merges keys on the left with the index on the right, it doesn't change the resulting index. Prefer `merge` to stay explicit.
