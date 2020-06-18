@@ -119,6 +119,15 @@ Marks with x and no lines: `.plot(marker='x', linestyle=' ', ax=ax)`
 
 * `fig, axs = plt.subplots(ncols=2, figsize=(8, 6))`
 
+### limits
+
+```
+min_val = min(ax.get_xlim()[0], ax.get_ylim()[0]
+max_val = min(ax.get_xlim()[1], ax.get_ylim()[1]
+ax.set_xlim(xmin=min_val, max=max_val)
+ax.set_ylim(xmin=min_val, max=max_val)
+```
+
 ### axis labels
 
 ```
