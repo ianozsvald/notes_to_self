@@ -134,6 +134,13 @@ ax.set_xlim(xmin=min_val, xmax=max_val)
 ax.set_ylim(ymin=min_val, ymax=max_val)
 ```
 
+#### symmetric (y axis)
+
+```
+biggest = max(abs(ax.get_ylim()[0]), abs(ax.get_ylim()[1]))
+ax.set_ylim(ymin=-biggest, ymax=biggest)
+```
+
 ### axis labels
 
 ```
