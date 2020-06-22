@@ -24,6 +24,8 @@
 
 * Pandas better describe - colour the percentiles, not the counts/mean/std, include 5/95% in percentiles. Add dtype description and maybe memory, not how many columns were ignored too (stick on the end maybe?)
 
+* Pandas better cut - give it some ranges and ask for nice labels and it'll form e.g. in scientific form (1M-500k ...) with open/closed labels, maybe special handling of e.g. 0, with formatting for currency and others
+
 ## Pandas
 
 ### `groupby`
