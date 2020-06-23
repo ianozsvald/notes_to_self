@@ -93,6 +93,12 @@ Probably add `dropna=False` every time _caveat_ this means we easily miss NaN va
 
 `pd.get_option('display.max_columns')` probably 20 and `max_rows` is 60. Use `pd.set_option('display.max_columns', 100)` for more cols in e.g. `.head()`. `pd.set_option('precision', 4)`. https://pandas.pydata.org/pandas-docs/stable/user_guide/options.html#frequently-used-options
 
+```
+from IPython.display import display
+with pd.option_context('display.max_rows', 999):
+    display(long_result) # display required else no output generated due to indentation
+```
+
 ### Data processing tips
 
 `query` with `NaN` rows is a pain, for text columns we could replace missing data with `-` and then that's another string-like thing for a query, this significantly simplifies the queries.
