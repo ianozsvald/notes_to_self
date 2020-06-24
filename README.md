@@ -113,6 +113,7 @@ def show_all(many_rows, max_rows=999):
 ax.spines['top'].set_visible(False)
 ax.spines['right'].set_visible(False)
 ax.grid(axis='x') # horizontal grid lines only
+ax.legend(frameon=False)
 ```
 
 ### `subplot`
