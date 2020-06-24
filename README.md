@@ -172,6 +172,12 @@ ax.set_yticklabels(new_yticks);
 
 * "percentage point, pp" for percentage differences https://en.wikipedia.org/wiki/Percentage_point, possibly use "proportion" in the title and aim for "%" symbol on numeric axis
 
+### axis ticks
+
+* https://matplotlib.org/3.1.0/api/ticker_api.html
+  * `FixedLocator` is good for equal indices e.g. week count 10, 11, 12
+  * `MaxNLocator` guesses at a good start/end point for fixed intervals
+
 ## Argument parsing
 
 ### `argparse`
