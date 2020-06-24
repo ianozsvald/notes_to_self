@@ -177,6 +177,7 @@ ax.set_yticklabels(new_yticks);
 * https://matplotlib.org/3.1.0/api/ticker_api.html
   * `FixedLocator` is good for equal indices e.g. week count 10, 11, 12
   * `MaxNLocator` guesses at a good start/end point for fixed intervals
+  * https://jakevdp.github.io/PythonDataScienceHandbook/04.10-customizing-ticks.html examples
 
 ## Argument parsing
 
