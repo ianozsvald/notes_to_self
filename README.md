@@ -6,6 +6,7 @@
 
 ### Getting into a new project
 
+* What is the purpose of this new project? Is it clearly defined?
 * What's the biggest uncertainty ahead? What does it cost to solve it, what value does it bring?
   * Try to derisk the biggest/most painful uncertainties soonest
 * What single thing might give us 80% of the remaining answer? Probably avoid the edge cases (document, but don't focus on them)
