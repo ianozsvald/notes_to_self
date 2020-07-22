@@ -19,6 +19,10 @@
 * Focus on understanding the levers for highest value delivery, check for shared agreement on these (ignore low-value stuff that's cool but won't enable beneficial change)
 * Aim for frequent mini-retros to discuss "what did we learn? what shouldn't we repeat?"
 
+# Definitions
+
+* Billion in UK and USA is 10^9 (the "short billion"), unlike various parts of Europe. Milliard can be used in Europe to refer to 10^9.
+
 # Python
 
 ## Wants
