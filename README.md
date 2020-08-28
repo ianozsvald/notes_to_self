@@ -243,7 +243,7 @@ Typically we'd write `pytest` to execute it, there's something weird with being 
 
 ### `pdb`
 
-`pdb.run("scipy.stats.power_divergence(o, axis=None, ddof=2, lambda_='log-likelihood')")` will invoke `pdb`, use `s` to step into the function, `n` for the next line, `p` to print state (use this to see that `f_exp` is calculated in an unexpected way, see Statistical tests below).
+In IPython `pdb.run("scipy.stats.power_divergence(o, axis=None, ddof=2, lambda_='log-likelihood')")` will invoke `pdb`, use `s` to step into the function, `n` for the next line, `p` to print state (use this to see that `f_exp` is calculated in an unexpected way, see Statistical tests below). `b _count` will set a breakpoint for the `_count` function inside `power_divergence`, run to it with `c`.
 
 
 ## Statistical tests
