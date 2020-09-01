@@ -248,9 +248,7 @@ In IPython `pdb.run("scipy.stats.power_divergence(o, axis=None, ddof=2, lambda_=
 
 ## Statistical tests
 
-`scipy.stats.chi2_contingency(o)` on a 2D array calculates `e=scipy.stats.contingency.expected_freq(o)` internally. With a `2x2` table the `dof==1` so `correction` is used which adjusts `o`, then this calls through to `scipy.stats.power_divergence`. To avoid the correction when debugging confirm that `scipy.stats.chi2_contingency(o, correction=False)` and `scipy.stats.power_divergence(o, e, axis=None, ddof=2)` are the same. See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.chi2_contingency.html
-
-To calculate an equivalent G Test use `scipy.stats.power_divergence(o, e, axis=None, ddof=2, lambda_='log-likelihood')`. _Note_ that `e` is calculated implicitly as the mean of the array inside `power_divergence` which is _not_ the same as calling `expected_freq`! Prefer to be explicit. See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.power_divergence.html
+`scipy.stats.chi2_contingency(o)` on a 2D array calculates `e=scipy.stats.contingency.expected_freq(o)` internally. With a `2x2` table the `dof==1` so `correction` is used which adjusts `o`, then this calls through to `scipy.stats.power_divergence`. To use a G Test pass `lambda_="log-likelihood"` to `chi2_contingency`. To avoid the correction when debugging confirm that `scipy.stats.chi2_contingency(o, correction=False)` and `scipy.stats.power_divergence(o, e, axis=None, ddof=2)` are the same. See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.chi2_contingency.html .  To calculate an equivalent G Test manually use `scipy.stats.power_divergence(o, e, axis=None, ddof=2, lambda_='log-likelihood')`. _Note_ that `e` is calculated implicitly as the mean of the array inside `power_divergence` which is _not_ the same as calling `expected_freq`! Prefer to be explicit. See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.power_divergence.html
 
 
 ## Getting to high code quality
