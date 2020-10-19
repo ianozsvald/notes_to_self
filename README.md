@@ -288,3 +288,7 @@ Check dataframe cols as I go
 ## link
 
 `ln -s other_folder_file .` link the other file into this folder.
+
+## scripts
+
+`set -euo` to fail most errors, unset variables or fails in a pipeline https://twitter.com/b0rk/status/1314345978963648524
