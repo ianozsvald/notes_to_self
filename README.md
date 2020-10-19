@@ -64,7 +64,7 @@ Pandas is closed-right by default i.e. with `right=True` (default) then bins are
 
 ### `merge`
 
-Merging is the underlying operation, `df.join` is a shortcut into `merge`.  `join` merges keys on the left with the index on the right, it doesn't change the resulting index. Prefer `merge` to stay explicit.
+Merging is the underlying operation, `df.join` is a shortcut into `merge`.  `join` merges keys on the left with the index on the right, it doesn't change the resulting index. Prefer `merge` to stay explicit and check to see if the `index` has changed.
 
 `indicator=True` adds `_merge` column with indicators like `both`. `validate='many_to_one'` validates uniqueness on the right (or left or both), raising `MergeError` if not validated.
 
@@ -191,6 +191,10 @@ ax.set_yticklabels(new_yticks);
   * `FixedLocator` is good for equal indices e.g. week count 10, 11, 12
   * `MaxNLocator` guesses at a good start/end point for fixed intervals
   * https://jakevdp.github.io/PythonDataScienceHandbook/04.10-customizing-ticks.html examples
+
+## IPython
+
+* `ipython -i script.py` will end script in interactive mode, add `-i --` so that args following `script.py` don't get picked up by IPython
 
 ## Argument parsing
 
