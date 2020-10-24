@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 from IPython.display import display
 
+dayofweek_dict = {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
+
 
 # TODO
 # bin to include NaN <NA> as an extra bin, maybe optional?
