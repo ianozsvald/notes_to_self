@@ -130,7 +130,7 @@ ax.legend(frameon=False)
 
 ### `subplot`
 
-* `fig, ax = plt.subplots()`
+* `fig, ax = plt.subplots(constrained_layout=True)`
 * `fig, axs = plt.subplots(figsize=(20, 12), nrows=2, gridspec_kw={'height_ratios': [2, 1]})` 
 
 ### Pandas `plot`
@@ -139,7 +139,11 @@ Marks with x and no lines: `.plot(marker='x', linestyle=' ', ax=ax)`
 
 ## Horiztonal lines
 
-`ax.axhline(color='grey', linestyle='--')`
+`ax.axhline(10, color='grey', linestyle='--')`
+
+## Formatting axis
+
+* `ax.get_yaxis().set_major_formatter(mpl.ticker.FuncFormatter(lambda x, p: format(int(x), ',')))`
 
 
 ### subplots
