@@ -287,6 +287,10 @@ Check dataframe cols as I go
 # possible -iv for all imported pkg versions? try this...
 ```
 
+# Video editing
+
+* https://github.com/mifi/lossless-cut
+
 # Shell
 
 ## link
