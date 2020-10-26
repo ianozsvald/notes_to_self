@@ -287,9 +287,10 @@ Check dataframe cols as I go
 # possible -iv for all imported pkg versions? try this...
 ```
 
-# Video editing
+# Dask
 
-* https://github.com/mifi/lossless-cut
+* (stupid niche) writing a custom distributed Agg `dd.Aggregation(name="sumsq", chunk=lambda s: s.aggregate(func=lambda x: np.sum(np.power(x, 2))), agg=lambda s: s.sum())` is a pain in the arse - this calculates a sum of squares on a grouped series
+
 
 # Shell
 
@@ -300,3 +301,7 @@ Check dataframe cols as I go
 ## scripts
 
 `set -euo` to fail most errors, unset variables or fails in a pipeline https://twitter.com/b0rk/status/1314345978963648524
+
+# Video editing
+
+* https://github.com/mifi/lossless-cut
