@@ -2,12 +2,18 @@ import pandas as pd
 import numpy as np
 from IPython.display import display
 
+# for Pandas mapping of .dt.dayofweek to a nice name
 dayofweek_dict = {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
 
 
 # TODO
 # bin to include NaN <NA> as an extra bin, maybe optional?
 # check value_counts in a Notebook with use_display=True
+
+def show_all(x):
+    from IPython.display import display
+    with pd.option(context('display.max_rows', 999):
+            display(x)
 
 def value_counts(ser, rows=10, use_display=False):
     """Prettier value counts, returns dataframe of counts & percents"""
