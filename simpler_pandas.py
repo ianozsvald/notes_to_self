@@ -1,20 +1,25 @@
 import pandas as pd
 import numpy as np
 from IPython.display import display
+import pytest
+
+
+# GroupBy notes
+# dfs.groupby([dfs.date.dt.year]) # can group on Series rather than name
 
 # for Pandas mapping of .dt.dayofweek to a nice name
 dayofweek_dict = {0: 'Monday', 1: 'Tuesday', 2: 'Wednesday', 3: 'Thursday', 4: 'Friday', 5: 'Saturday', 6: 'Sunday'}
 
 
-# TODO
-# bin to include NaN <NA> as an extra bin, maybe optional?
-# check value_counts in a Notebook with use_display=True
-
-def show_all(x):
+def show_all(x, nbr_rows=999):
+    '''List more rows of DataFrame and Series results than usual'''
     from IPython.display import display
-    with pd.option(context('display.max_rows', 999):
-            display(x)
+    with pd.option(context('display.max_rows', nbr_rows)):
+        display(x)
 
+
+# TODO 
+# check value_counts in a Notebook with use_display=True
 def value_counts(ser, rows=10, use_display=False):
     """Prettier value counts, returns dataframe of counts & percents"""
     vc1 = ser.value_counts(dropna=False)
@@ -32,10 +37,19 @@ def value_counts(ser, rows=10, use_display=False):
     return df
 
 
-
-def bin_and_label(dist, bin_edges):
+# TODO test for empty bin_edges case
+# TODO consider making <0 optional
+# TODO bin to include NaN <NA> as an extra bin, maybe optional?
+def bin_and_label(dist, bin_edges, count_nan=False, count_inf=False):
+    """Bin items into discrete ranges
+    right is closed by default so bins are [lower, upper)
+    By default NaN and Inf and -Inf are counted in the highest bin
+    """
+    if np.isinf(dist).any() and count_inf:
+        raise ValueError('This code does not handle Infs separately yet')
+    if np.isnan(dist).any() and count_nan:
+        raise ValueError('This code does not handle Nulls separately yet')
     indices = np.arange(0, len(bin_edges)+1, 1)
-    #print(f"indices {indices}")
     ser_binned = pd.Series(np.digitize(dist, bin_edges))
     labels = []
     labels.append(f'<{bin_edges[0]}')
@@ -49,6 +63,7 @@ def bin_and_label(dist, bin_edges):
     #print(f"labels: {labels}")
     dict_labels = {n:label for (n, label) in enumerate(labels)}
     counted = ser_binned.value_counts().reindex(indices).fillna(0).sort_index().rename(dict_labels)
+    # check we aren't losing any items
     assert counted.sum() == len(dist), (len(counted), counted.sum(), len(dist))
     return counted
    
@@ -71,10 +86,38 @@ def test_bin_and_label():
 
     # TODO test for only 1 bin edge
 
+def test_bin_and_label_inf_nan():
+    '''Check np.inf and np.nan in bin_and_label'''
+    dist = np.array([np.nan, np.inf, -1, 0, 1, 2, 3])
+    bin_edges = np.array([0, 1, 2])
+    counts = bin_and_label(dist, bin_edges)
+    print(counts)
+
+    with pytest.raises(ValueError):
+        counts = bin_and_label(dist, bin_edges, count_nan=True)
+    with pytest.raises(ValueError):
+        counts = bin_and_label(dist, bin_edges, count_inf=True)
+
+#TODO add test
+def flatten_multiindex(gpby, index=True, columns=True):
+    '''Flatten MultiIndex to flat index after e.g. groupby'''
+    if index is True:
+        new_flat_index = ['_'.join(str(s) for s in multi_index) for multi_index in gpby.index.values]
+        #gpby = gpby.reset_index(drop=True)
+        gpby.index = new_flat_index
+    if columns is True:
+        new_flat_index = ['_'.join(str(s) for s in multi_index) for multi_index in gpby.columns.values]
+        #gpby = gpby.reset_index(drop=True)
+        gpby.columns = new_flat_index
+    return gpby
+
+
 
 if __name__ == "__main__":
     print("Counting")
     df = pd.DataFrame(['a', 'a', 'a', 'a', 'b', 'c'], columns=['val'])
+    print('display(df):')
+    display(df)
     df_pct = value_counts(df.val)
 
     print()
@@ -82,4 +125,6 @@ if __name__ == "__main__":
     dist = np.random.normal(loc=0, scale=1, size=1000)
     bin_edges = [-3, -2, -1, 0, 1, 2, 3]
     counted = bin_and_label(dist, bin_edges)
-    print(counted)
+    display(counted)
+
+
