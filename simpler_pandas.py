@@ -112,6 +112,13 @@ def flatten_multiindex(gpby, index=True, columns=True):
     return gpby
 
 
+# TODO add test
+# TODO let me label <= >= for the extremes, maybe let me make a nice range with a convenience fist?
+# int_index._data.to_numpy()[0] this gives Interval items, maybe I need to override this somehow to build a better display?
+def bin_and_label2(dist, bin_edges):
+    int_index = pd.IntervalIndex.from_breaks(bin_edges, closed='left')
+    cat = pd.cut(dist, int_index)
+    return int_index, cat
 
 if __name__ == "__main__":
     print("Counting")
@@ -127,4 +134,8 @@ if __name__ == "__main__":
     counted = bin_and_label(dist, bin_edges)
     display(counted)
 
+    bin_edges = [-np.inf, -3, -2, -1, 0, 1, 2, 3, np.inf]
+    int_index, counted2 = bin_and_label2(dist, bin_edges)
+    #display(counted2)
+    display(counted2.value_counts().sort_index(ascending=True))
 
