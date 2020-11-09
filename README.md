@@ -113,6 +113,10 @@ def show_all(many_rows, max_rows=999):
         display(many_rows) # display required else no output generated due to indentation
 ```
 
+### selecting columns or rows with `filter`
+
+Use `df.filter(regex='blah')` to find column names containing "blah", add `axis=0` to do the same filtering on row labels.
+
 ### Data processing tips
 
 `query` with `NaN` rows is a pain, for text columns we could replace missing data with `-` and then that's another string-like thing for a query, this significantly simplifies the queries.
