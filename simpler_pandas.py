@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from IPython.display import display
 import pytest
+from labelling import format_to_base_10
 
 
 # GroupBy notes
@@ -40,7 +41,7 @@ def value_counts(ser, rows=10, use_display=False):
 # TODO test for empty bin_edges case
 # TODO consider making <0 optional
 # TODO bin to include NaN <NA> as an extra bin, maybe optional?
-def bin_and_label(dist, bin_edges, count_nan=False, count_inf=False):
+def bin_and_labelXX(dist, bin_edges, count_nan=False, count_inf=False):
     """Bin items into discrete ranges
     right is closed by default so bins are [lower, upper)
     By default NaN and Inf and -Inf are counted in the highest bin
@@ -68,7 +69,7 @@ def bin_and_label(dist, bin_edges, count_nan=False, count_inf=False):
     return counted
    
 
-def test_bin_and_label():
+def XXtest_bin_and_label():
     # check that out of order items and a gap are counted appropriately
     dist = [4, -1, 0, 0, 0, 1, 2, 8, 9, 10]
     bin_edges = np.arange(2, 10, 2)
@@ -86,7 +87,7 @@ def test_bin_and_label():
 
     # TODO test for only 1 bin edge
 
-def test_bin_and_label_inf_nan():
+def XXtest_bin_and_label_inf_nan():
     '''Check np.inf and np.nan in bin_and_label'''
     dist = np.array([np.nan, np.inf, -1, 0, 1, 2, 3])
     bin_edges = np.array([0, 1, 2])
@@ -115,10 +116,61 @@ def flatten_multiindex(gpby, index=True, columns=True):
 # TODO add test
 # TODO let me label <= >= for the extremes, maybe let me make a nice range with a convenience fist?
 # int_index._data.to_numpy()[0] this gives Interval items, maybe I need to override this somehow to build a better display?
-def bin_and_label2(dist, bin_edges):
+# pandas._libs.interval.Interval from type(int_index._data.to_numpy()[0])
+def bin_and_label(dist, bin_edges):
     int_index = pd.IntervalIndex.from_breaks(bin_edges, closed='left')
     cat = pd.cut(dist, int_index)
     return int_index, cat
+
+def test_bin_and_label():
+    dist = np.array([-100, 0, 5])
+    bin_edges = [-np.inf, -1000, 0, 1000]
+    int_index, counted = bin_and_label(dist, bin_edges)
+    assert (counted.value_counts().values == np.array([0, 1, 2])).all()
+    display(counted.value_counts().sort_index(ascending=True))
+
+
+# TODO make right-closed too
+def label_interval(interval, format_fn=None, **kwargs):
+    left = interval.left
+    if not np.isinf(left):
+        if format_fn is not None:
+            left = format_fn(left, **kwargs)
+    right = interval.right
+    if not np.isinf(right):
+        if format_fn is not None:
+            right = format_fn(right, **kwargs)
+    if interval.closed_left:
+        if np.isinf(interval.left):
+            label = f'< {right}'
+        elif np.isinf(interval.right):
+            label = f'>= {left}'
+        else:
+            label = f'[{left} - {right})' 
+
+    return label
+
+def test_label_interval():
+    bin_edges = [-np.inf, -1000, 0, np.inf]
+    int_index = pd.IntervalIndex.from_breaks(bin_edges, closed='left')
+    interval = int_index._data.to_numpy()[0] # Interval(-inf, -1000.0, closed='left')
+    assert label_interval(interval) == '< -1000.0'
+    interval = int_index._data.to_numpy()[1] # Interval(-1000.0, 0.0, closed='left')
+    assert label_interval(interval) == '[-1000.0 - 0.0)'
+    interval = int_index._data.to_numpy()[2] # Interval(0.0, 1000.0, closed='left')
+    assert label_interval(interval) == '>= 0.0'
+
+    interval = int_index._data.to_numpy()[0] 
+    assert label_interval(interval, format_to_base_10, trim_0_decimals=True) == '< -1k'
+    interval = int_index._data.to_numpy()[1] 
+    assert label_interval(interval, format_to_base_10, trim_0_decimals=True) == '[-1k - 0)'
+    interval = int_index._data.to_numpy()[2] 
+    assert label_interval(interval, format_to_base_10, trim_0_decimals=True) == '>= 0'
+
+    interval = int_index._data.to_numpy()[0] 
+    assert label_interval(interval, format_to_base_10, trim_0_decimals=True, prefix="£") == '< -£1k'
+    interval = int_index._data.to_numpy()[1] 
+    assert label_interval(interval, format_to_base_10, trim_0_decimals=True, prefix="£") == '[-£1k - £0)'
 
 if __name__ == "__main__":
     print("Counting")
@@ -130,12 +182,11 @@ if __name__ == "__main__":
     print()
     print("Normal distribution, check that bins catch everything")
     dist = np.random.normal(loc=0, scale=1, size=1000)
-    bin_edges = [-3, -2, -1, 0, 1, 2, 3]
-    counted = bin_and_label(dist, bin_edges)
-    display(counted)
+    #bin_edges = [-3, -2, -1, 0, 1, 2, 3]
+    #counted = bin_and_label(dist, bin_edges)
+    #display(counted)
 
     bin_edges = [-np.inf, -3, -2, -1, 0, 1, 2, 3, np.inf]
-    int_index, counted2 = bin_and_label2(dist, bin_edges)
+    int_index, counted2 = bin_and_label(dist, bin_edges)
     #display(counted2)
     display(counted2.value_counts().sort_index(ascending=True))
-
