@@ -1,3 +1,4 @@
+from functools import partial
 import pandas as pd
 import numpy as np
 from IPython.display import display
@@ -216,11 +217,10 @@ if __name__ == "__main__":
     print()
     print("Normal distribution, check that bins catch everything")
     dist = np.random.normal(loc=0, scale=1, size=1000)
-    # bin_edges = [-3, -2, -1, 0, 1, 2, 3]
-    # counted = bin_and_label(dist, bin_edges)
-    # display(counted)
 
     bin_edges = [-np.inf, -3, -2, -1, 0, 1, 2, 3, np.inf]
     int_index, counted = bin_and_label(dist, bin_edges)
-    # display(counted)
-    display(counted2.value_counts().sort_index(ascending=True))
+    counted_vc = counted.value_counts()
+    label_interval_args = partial(label_interval, format_fn=format_to_base_10, prefix='$')
+    counted_vc.index = counted_vc.index.map(label_interval_args)
+    display(counted_vc)

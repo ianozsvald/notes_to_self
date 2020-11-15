@@ -41,6 +41,10 @@ def test_format_to_base_10():
     assert format_to_base_10(-2_000_000, prefix="£", precision=1, trim_0_decimals=True) == "-£2M" 
     assert format_to_base_10(2_000, prefix="£", precision=2)  == "£2.00k" 
 
+    # what happens to 1, 0.1, 0.01?
+    # what happens to 1000.1 ?
+    # add a postfix too e.g. s or m 
+
 
 if __name__ == "__main__":
     print(format_to_base_10(-2_500_000, prefix="£", precision=1))
