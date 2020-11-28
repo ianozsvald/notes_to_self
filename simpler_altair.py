@@ -1,8 +1,12 @@
 
+# to try
+# columns='col' # will make multiple plots on that categorical
+# a | b # will make two plots side by side
 
 # https://altair-viz.github.io/user_guide/data.html
 # DataFrames go into alt.Chart(df) but if we want .index we have to reset_index()
 # and refer to it by the index's name (or `index`)
+# https://github.com/altair-viz/altair/issues/271
 # x='counts:Q' will plot counts on x axis as a Quantitative
 # https://altair-viz.github.io/user_guide/encoding.html#encoding-data-types
 # Temporal, Ordinal, Nominal (discrete unordered category), Geojson
@@ -33,3 +37,12 @@
 #    width=200,
 #    height=200
 #)
+
+# https://altair-viz.github.io/user_guide/customization.html#adjusting-axis-labels
+#     x=alt.X('x', axis=alt.Axis(format='%', title='percentage')),
+# note format can be removed
+
+# sorting of index gives correct order
+#x=alt.X('index', sort=df2.index.values
+
+# categoricals (e.g. from cut) raise a JSON encoding error, convert to string first

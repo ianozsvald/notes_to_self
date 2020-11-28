@@ -120,8 +120,9 @@ def XXtest_bin_and_label_inf_nan():
 
 
 # TODO add test
-def flatten_multiindex(gpby, index=True, columns=True):
+def flatten_multiindex(gpby, index=False, columns=False):
     """Flatten MultiIndex to flat index after e.g. groupby"""
+    assert index==True or columns==True
     if index is True:
         new_flat_index = [
             "_".join(str(s) for s in multi_index) for multi_index in gpby.index.values
