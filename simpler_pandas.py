@@ -33,7 +33,7 @@ def show_all(x, nbr_rows=999):
         
 # attrib: https://github.com/dexplo/minimally_sufficient_pandas/blob/master/minimally_sufficient_pandas/_pandas_accessor.py#L130        
 # TODO copied in by ian, it might not work! remove self, try it...
-def display(self, top=100, bottom=0, max_columns=None):
+def display2TOTRY(df, top=100, bottom=0, max_columns=None):
         """
         Display the top/bottom n rows of the DataFrame. This only displays the 
         DataFrame visually in the output and does NOT return it. None is 
@@ -55,9 +55,9 @@ def display(self, top=100, bottom=0, max_columns=None):
         """
         with pd.option_context('display.max_rows', None, 'display.max_columns', max_columns):
             if top > 0:
-                display(self._df.head(top).style.set_caption(f'Top {top} rows'))
+                display(df.head(top).style.set_caption(f'Top {top} rows'))
             if bottom > 0:
-                display(self._df.tail(bottom).style.set_caption(f'Bottom {bottom} rows'))    
+                display(df.tail(bottom).style.set_caption(f'Bottom {bottom} rows'))    
 
 
 # TODO
@@ -77,77 +77,6 @@ def value_counts(ser, rows=10, use_display=False):
     rows_not_shown = max(df.shape[0] - rows, 0)
     print(f"Total rows not shown {rows_not_shown} of {df.shape[0]}")
     return df
-
-
-# TODO test for empty bin_edges case
-# TODO consider making <0 optional
-# TODO bin to include NaN <NA> as an extra bin, maybe optional?
-def bin_and_labelXX(dist, bin_edges, count_nan=False, count_inf=False):
-    """Bin items into discrete ranges
-    right is closed by default so bins are [lower, upper)
-    By default NaN and Inf and -Inf are counted in the highest bin
-    """
-    if np.isinf(dist).any() and count_inf:
-        raise ValueError("This code does not handle Infs separately yet")
-    if np.isnan(dist).any() and count_nan:
-        raise ValueError("This code does not handle Nulls separately yet")
-    indices = np.arange(0, len(bin_edges) + 1, 1)
-    ser_binned = pd.Series(np.digitize(dist, bin_edges))
-    labels = []
-    labels.append(f"<{bin_edges[0]}")
-    previous = bin_edges[0]
-    item = "NOTASSIGNED"  # error condition if only 1 bin edge to solve (see unit test)
-    for idx, item in enumerate(bin_edges[1:]):
-        labels.append(f"[{previous} - {item})")
-        previous = item
-    labels.append(f">={item}")
-    # print(f"bin_edges: {bin_edges}")
-    # print(f"labels: {labels}")
-    dict_labels = {n: label for (n, label) in enumerate(labels)}
-    counted = (
-        ser_binned.value_counts()
-        .reindex(indices)
-        .fillna(0)
-        .sort_index()
-        .rename(dict_labels)
-    )
-    # check we aren't losing any items
-    assert counted.sum() == len(dist), (len(counted), counted.sum(), len(dist))
-    return counted
-
-
-def XXtest_bin_and_label():
-    # check that out of order items and a gap are counted appropriately
-    dist = [4, -1, 0, 0, 0, 1, 2, 8, 9, 10]
-    bin_edges = np.arange(2, 10, 2)
-    counted = bin_and_label(dist, bin_edges)
-    expected = pd.Series(
-        [5.0, 1.0, 1.0, 0.0, 3.0], index=["<2", "[2 - 4)", "[4 - 6)", "[6 - 8)", ">=8"]
-    )
-    assert expected.sum() == len(dist), "We seem to have lost at least one item"
-    assert (counted == expected).all()
-
-    dist = [0, 0, 0, 1, 100]
-    bin_edges = [1, 2]
-    counted = bin_and_label(dist, bin_edges)
-    expected = pd.Series([3, 1, 1], index=["<1", "[1 - 2)", ">=2"])
-    assert expected.sum() == len(dist), "We seem to have lost at least one item"
-    assert (counted == expected).all()
-
-    # TODO test for only 1 bin edge
-
-
-def XXtest_bin_and_label_inf_nan():
-    """Check np.inf and np.nan in bin_and_label"""
-    dist = np.array([np.nan, np.inf, -1, 0, 1, 2, 3])
-    bin_edges = np.array([0, 1, 2])
-    counts = bin_and_label(dist, bin_edges)
-    print(counts)
-
-    with pytest.raises(ValueError):
-        counts = bin_and_label(dist, bin_edges, count_nan=True)
-    with pytest.raises(ValueError):
-        counts = bin_and_label(dist, bin_edges, count_inf=True)
 
 
 # TODO add test
@@ -239,6 +168,46 @@ def test_label_interval():
     )
 
 
+def make_bin_edges(desc):
+    """desc=='0 1 ... 5' -> -np.inf, 0, 1, 2, 3, 4, 5, np.inf"""
+    parts = desc.split(' ')
+    start = float(parts[0])
+    step = float(parts[1]) - float(parts[0])
+    end = float(parts[3])
+    bins = np.arange(start, end, step)
+    bins = np.concatenate(([-np.inf], bins, [end], [np.inf]))
+    return bins
+
+
+def test_make_bin_edges():
+    bins = make_bin_edges("1 2 ... 5")
+    assert (bins == np.array([-np.inf, 1, 2, 3, 4, 5, np.inf])).all()
+    bins = make_bin_edges("-5 -3 ... 5")
+    assert (bins == np.array([-np.inf, -5, -3, -1, 1, 3, 5, np.inf])).all()
+    # TODO fix, we get 1 extra item due to rounding differences!
+    #bins = make_bin_edges("-0.5 -0.4 ... 0.1")
+    #np.testing.assert_allclose(bins, np.array([-np.inf, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, np.inf]))
+
+
+# TODO should we return the result or modify in place?
+def apply_labelling(df_ser, format_fn=None, **kwargs):
+    """Modify index using labelling function"""
+    label_interval_args = partial(label_interval, format_fn=format_fn, **kwargs)
+    new_index = df_ser.index.map(label_interval_args)
+    df_ser.index = new_index
+
+
+def test_apply_labelling():
+    items = [1, 1, 1, 2, 3, ]
+    df = pd.DataFrame({'items': items})
+    bin_edges = make_bin_edges("0 1 ... 2")
+    int_index, counted = bin_and_label(items, bin_edges)
+    vc = counted.value_counts()
+    apply_labelling(vc, format_to_base_10, prefix='', precision=0)
+    assert vc.index[0] == '< 0'
+    assert (vc.index == ['< 0', '[0 - 1)', '[1 - 2)', '>= 2']).all()
+    assert (vc.values == [0, 0, 3, 2]).all()
+
 if __name__ == "__main__":
     print("Counting")
     df = pd.DataFrame(["a", "a", "a", "a", "b", "c"], columns=["val"])
@@ -250,9 +219,8 @@ if __name__ == "__main__":
     print("Normal distribution, check that bins catch everything")
     dist = np.random.normal(loc=0, scale=1, size=1000)
 
-    bin_edges = [-np.inf, -3, -2, -1, 0, 1, 2, 3, np.inf]
+    bin_edges = make_bin_edges("-3 -2 ... 3")
     int_index, counted = bin_and_label(dist, bin_edges)
     counted_vc = counted.value_counts()
-    label_interval_args = partial(label_interval, format_fn=format_to_base_10, prefix='$')
-    counted_vc.index = counted_vc.index.map(label_interval_args)
+    apply_labelling(counted_vc, format_to_base_10, prefix="$")
     display(counted_vc)
