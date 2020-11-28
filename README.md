@@ -66,7 +66,9 @@ Pandas is closed-right by default i.e. with `right=True` (default) then bins are
 
 Merging is the underlying operation, `df.join` is a shortcut into `merge`.  `join` merges keys on the left with the index on the right, it doesn't change the resulting index. Prefer `merge` to stay explicit and check to see if the `index` has changed.
 
-`indicator=True` adds `_merge` column with indicators like `both`. `validate='many_to_one'` validates uniqueness on the right (or left or both), raising `MergeError` if not validated.
+`indicator=True` adds `_merge` column with indicators like `both`. 
+
+`validate='many_to_one'` validates uniqueness on the right (or left or both), raising `MergeError` if not validated. Really ought to do an assert on the before-and-after-row-count as if e.g. on a `left` join we have repeated keys on the right side, we'll expand the resulting dataframe silently! Note the `validate` argument does this in Pandas but with Dask you have to do it manually (so for 2020 - better to be safe).
 
 ### `concatenate`
 
@@ -304,7 +306,7 @@ Check dataframe cols as I go
 
 ## scripts
 
-`set -euo` to fail most errors, unset variables or fails in a pipeline https://twitter.com/b0rk/status/1314345978963648524
+`set -euox` to fail most errors, unset variables or fails in a pipeline https://twitter.com/b0rk/status/1314345978963648524 and to print commands as they're executed https://jvns.ca/blog/2017/03/26/bash-quirks/
 
 # Video editing
 

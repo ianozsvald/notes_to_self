@@ -28,6 +28,37 @@ def show_all(x, nbr_rows=999):
     with pd.option(context("display.max_rows", nbr_rows)):
         display(x)
 
+# TODO consider adding flatten index
+# https://github.com/dexplo/minimally_sufficient_pandas/blob/master/minimally_sufficient_pandas/_pandas_accessor.py#L42
+        
+# attrib: https://github.com/dexplo/minimally_sufficient_pandas/blob/master/minimally_sufficient_pandas/_pandas_accessor.py#L130        
+# TODO copied in by ian, it might not work! remove self, try it...
+def display(self, top=100, bottom=0, max_columns=None):
+        """
+        Display the top/bottom n rows of the DataFrame. This only displays the 
+        DataFrame visually in the output and does NOT return it. None is 
+        always returned. Use the head/tail methods to return a DataFrame
+        Parameters
+        ----------
+        top : int, default 100
+            Number of rows to display from the top of the DataFrame.
+            When <=0, no DataFrame is displayed
+        bottom : int, default 0
+            Number of rows to display from the bottom of the DataFrame.
+            When <=0, no DataFrame is displayed
+        max_columns : int, default None
+            Controls the pd.options.display.max_columns property. 
+            When None (default), all column get displayed.
+        Returns
+        -------
+        None
+        """
+        with pd.option_context('display.max_rows', None, 'display.max_columns', max_columns):
+            if top > 0:
+                display(self._df.head(top).style.set_caption(f'Top {top} rows'))
+            if bottom > 0:
+                display(self._df.tail(bottom).style.set_caption(f'Bottom {bottom} rows'))    
+
 
 # TODO
 # check value_counts in a Notebook with use_display=True
