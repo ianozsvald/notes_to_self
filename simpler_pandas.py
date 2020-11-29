@@ -21,12 +21,21 @@ dayofweek_dict = {
 }
 
 
-def show_all(x, nbr_rows=999):
+def show_all(x, head=999, tail=999):
     """List more rows of DataFrame and Series results than usual"""
     from IPython.display import display
 
-    with pd.option(context("display.max_rows", nbr_rows)):
-        display(x)
+    head = min(x.shape[0], head)
+    tail = min(x.shape[0]-head, 0)
+
+    if head > 0:
+        with pd.option_context("display.max_rows", head):
+            display(x)
+    if tail > 0:
+        if head > 0:
+            print('...')
+        with pd.option_context("display.max_rows", tail):
+            display(x.tail(tail))
 
 # TODO consider adding flatten index
 # https://github.com/dexplo/minimally_sufficient_pandas/blob/master/minimally_sufficient_pandas/_pandas_accessor.py#L42
@@ -62,7 +71,7 @@ def display2TOTRY(df, top=100, bottom=0, max_columns=None):
 
 # TODO
 # check value_counts in a Notebook with use_display=True
-def value_counts(ser, rows=10, use_display=False):
+def value_counts_pct(ser, rows=10, use_display=False):
     """Prettier value counts, returns dataframe of counts & percents"""
     vc1 = ser.value_counts(dropna=False)
     vc2 = ser.value_counts(dropna=False, normalize=True)
@@ -102,16 +111,16 @@ def flatten_multiindex(gpby, index=False, columns=False):
 # TODO let me label <= >= for the extremes, maybe let me make a nice range with a convenience fist?
 # int_index._data.to_numpy()[0] this gives Interval items, maybe I need to override this somehow to build a better display?
 # pandas._libs.interval.Interval from type(int_index._data.to_numpy()[0])
-def bin_and_label(dist, bin_edges):
+def bin_series(dist, bin_edges):
     int_index = pd.IntervalIndex.from_breaks(bin_edges, closed="left")
     cat = pd.cut(dist, int_index)
     return int_index, cat
 
 
-def test_bin_and_label():
+def test_bin_series():
     dist = np.array([-100, 0, 5])
     bin_edges = [-np.inf, -1000, 0, 1000]
-    int_index, counted = bin_and_label(dist, bin_edges)
+    int_index, counted = bin_series(dist, bin_edges)
     assert (counted.value_counts().values == np.array([0, 1, 2])).all()
     display(counted.value_counts().sort_index(ascending=True))
 
@@ -171,11 +180,24 @@ def test_label_interval():
 def make_bin_edges(desc):
     """desc=='0 1 ... 5' -> -np.inf, 0, 1, 2, 3, 4, 5, np.inf"""
     parts = desc.split(' ')
+    if False:
+        try:
+            # 
+            start = int(parts[0])
+            step = int(parts[1]) - int(parts[0])
+            end = int(parts[3])
+            bins = np.arange(start, end, step)
+            bins = np.concatenate(([-np.inf], bins, [end], [np.inf]))
+        except ValueError:
+            pass
+    # hopefully we have floats, if not this will just die
     start = float(parts[0])
     step = float(parts[1]) - float(parts[0])
     end = float(parts[3])
-    bins = np.arange(start, end, step)
-    bins = np.concatenate(([-np.inf], bins, [end], [np.inf]))
+    num = round((end - start) / step) + 1
+    print(start, end, step, num)
+    bins = np.linspace(start, end, num=num)
+    bins = np.concatenate(([-np.inf], bins, [np.inf]))
     return bins
 
 
@@ -184,9 +206,12 @@ def test_make_bin_edges():
     assert (bins == np.array([-np.inf, 1, 2, 3, 4, 5, np.inf])).all()
     bins = make_bin_edges("-5 -3 ... 5")
     assert (bins == np.array([-np.inf, -5, -3, -1, 1, 3, 5, np.inf])).all()
-    # TODO fix, we get 1 extra item due to rounding differences!
-    #bins = make_bin_edges("-0.5 -0.4 ... 0.1")
-    #np.testing.assert_allclose(bins, np.array([-np.inf, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, np.inf]))
+    bins = make_bin_edges("-0.5 -0.4 ... -0.3")
+    np.testing.assert_allclose(bins, np.array([-np.inf, -0.5, -0.4, -0.3, np.inf]))
+    bins = make_bin_edges("-0.5 -0.4 ... 0.1")
+    np.testing.assert_allclose(bins, np.array([-np.inf, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, np.inf]), atol=1e-5)
+    bins = make_bin_edges("0.0 0.1 ... 0.5")
+    np.testing.assert_allclose(bins, np.array([-np.inf, 0, 0.1, 0.2, 0.3, 0.4, 0.5, np.inf]), atol=1e-5)
 
 
 # TODO should we return the result or modify in place?
@@ -201,7 +226,7 @@ def test_apply_labelling():
     items = [1, 1, 1, 2, 3, ]
     df = pd.DataFrame({'items': items})
     bin_edges = make_bin_edges("0 1 ... 2")
-    int_index, counted = bin_and_label(items, bin_edges)
+    int_index, counted = bin_series(items, bin_edges)
     vc = counted.value_counts()
     apply_labelling(vc, format_to_base_10, prefix='', precision=0)
     assert vc.index[0] == '< 0'
@@ -212,15 +237,15 @@ if __name__ == "__main__":
     print("Counting")
     df = pd.DataFrame(["a", "a", "a", "a", "b", "c"], columns=["val"])
     print("display(df):")
-    display(df)
-    df_pct = value_counts(df.val)
+    show_all(df)
+    df_pct = value_counts_pct(df.val)
 
     print()
     print("Normal distribution, check that bins catch everything")
     dist = np.random.normal(loc=0, scale=1, size=1000)
 
     bin_edges = make_bin_edges("-3 -2 ... 3")
-    int_index, counted = bin_and_label(dist, bin_edges)
+    int_index, counted = bin_series(dist, bin_edges)
     counted_vc = counted.value_counts()
     apply_labelling(counted_vc, format_to_base_10, prefix="$")
-    display(counted_vc)
+    show_all(counted_vc)
