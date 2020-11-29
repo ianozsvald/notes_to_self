@@ -21,53 +21,26 @@ dayofweek_dict = {
 }
 
 
-def show_all(x, head=999, tail=999):
+def show_all(x, head=999, tail=10):
     """List more rows of DataFrame and Series results than usual"""
+    # CONSIDER using 'display.max_columns' too?
     from IPython.display import display
 
     head = min(x.shape[0], head)
-    tail = min(x.shape[0]-head, 0)
+    tail = min(x.shape[0]-head, tail)
 
     if head > 0:
-        with pd.option_context("display.max_rows", head):
-            display(x)
+        with pd.option_context("display.max_rows", None):
+            display(x.head(head))
     if tail > 0:
         if head > 0:
             print('...')
-        with pd.option_context("display.max_rows", tail):
+        with pd.option_context("display.max_rows", None):
             display(x.tail(tail))
 
 # TODO consider adding flatten index
 # https://github.com/dexplo/minimally_sufficient_pandas/blob/master/minimally_sufficient_pandas/_pandas_accessor.py#L42
         
-# attrib: https://github.com/dexplo/minimally_sufficient_pandas/blob/master/minimally_sufficient_pandas/_pandas_accessor.py#L130        
-# TODO copied in by ian, it might not work! remove self, try it...
-def display2TOTRY(df, top=100, bottom=0, max_columns=None):
-        """
-        Display the top/bottom n rows of the DataFrame. This only displays the 
-        DataFrame visually in the output and does NOT return it. None is 
-        always returned. Use the head/tail methods to return a DataFrame
-        Parameters
-        ----------
-        top : int, default 100
-            Number of rows to display from the top of the DataFrame.
-            When <=0, no DataFrame is displayed
-        bottom : int, default 0
-            Number of rows to display from the bottom of the DataFrame.
-            When <=0, no DataFrame is displayed
-        max_columns : int, default None
-            Controls the pd.options.display.max_columns property. 
-            When None (default), all column get displayed.
-        Returns
-        -------
-        None
-        """
-        with pd.option_context('display.max_rows', None, 'display.max_columns', max_columns):
-            if top > 0:
-                display(df.head(top).style.set_caption(f'Top {top} rows'))
-            if bottom > 0:
-                display(df.tail(bottom).style.set_caption(f'Bottom {bottom} rows'))    
-
 
 # TODO
 # check value_counts in a Notebook with use_display=True
@@ -92,6 +65,7 @@ def value_counts_pct(ser, rows=10, use_display=False):
 def flatten_multiindex(gpby, index=False, columns=False):
     """Flatten MultiIndex to flat index after e.g. groupby"""
     assert index==True or columns==True
+    gpby = gpby.copy()
     if index is True:
         new_flat_index = [
             "_".join(str(s) for s in multi_index) for multi_index in gpby.index.values
@@ -112,9 +86,9 @@ def flatten_multiindex(gpby, index=False, columns=False):
 # int_index._data.to_numpy()[0] this gives Interval items, maybe I need to override this somehow to build a better display?
 # pandas._libs.interval.Interval from type(int_index._data.to_numpy()[0])
 def bin_series(dist, bin_edges):
-    int_index = pd.IntervalIndex.from_breaks(bin_edges, closed="left")
-    cat = pd.cut(dist, int_index)
-    return int_index, cat
+    interval_index = pd.IntervalIndex.from_breaks(bin_edges, closed="left")
+    cat = pd.cut(dist, interval_index)
+    return interval_index, cat
 
 
 def test_bin_series():
@@ -180,22 +154,12 @@ def test_label_interval():
 def make_bin_edges(desc):
     """desc=='0 1 ... 5' -> -np.inf, 0, 1, 2, 3, 4, 5, np.inf"""
     parts = desc.split(' ')
-    if False:
-        try:
-            # 
-            start = int(parts[0])
-            step = int(parts[1]) - int(parts[0])
-            end = int(parts[3])
-            bins = np.arange(start, end, step)
-            bins = np.concatenate(([-np.inf], bins, [end], [np.inf]))
-        except ValueError:
-            pass
     # hopefully we have floats, if not this will just die
     start = float(parts[0])
     step = float(parts[1]) - float(parts[0])
     end = float(parts[3])
     num = round((end - start) / step) + 1
-    print(start, end, step, num)
+    #print(start, end, step, num)
     bins = np.linspace(start, end, num=num)
     bins = np.concatenate(([-np.inf], bins, [np.inf]))
     return bins
@@ -221,7 +185,8 @@ def apply_labelling(df_ser, format_fn=None, **kwargs):
     new_index = df_ser.index.map(label_interval_args)
     df_ser.index = new_index
 
-
+# TODO make another test which tests for percentage range [0, 1.0]
+# and checks that the human printed labels are e.g. 0.1, 0.2, 0.3 with no extra dp
 def test_apply_labelling():
     items = [1, 1, 1, 2, 3, ]
     df = pd.DataFrame({'items': items})
@@ -232,6 +197,7 @@ def test_apply_labelling():
     assert vc.index[0] == '< 0'
     assert (vc.index == ['< 0', '[0 - 1)', '[1 - 2)', '>= 2']).all()
     assert (vc.values == [0, 0, 3, 2]).all()
+
 
 if __name__ == "__main__":
     print("Counting")
