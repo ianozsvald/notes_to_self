@@ -58,9 +58,8 @@ def set_commas_olddependsonrendering(ax, on_x_axis=True, on_y_axis=True):
         axis.set_major_formatter(mpl.ticker.FuncFormatter(lambda x, pos: format(int(x), ',')))
 
 
-def set_common_mpl_styles(ax, legend=True, grid_axis='y', ylabel=None, xlabel=None, title=None):
+def set_common_mpl_styles(ax, legend=True, grid_axis='y', ylabel=None, xlabel=None, title=None, ymin=0):
     ax.grid(axis=grid_axis)
-    #ax.legend(frameon=False) # enable legend
     if legend == False:
         ax.legend_.remove()
     ax.spines['top'].set_visible(False)
@@ -71,6 +70,8 @@ def set_common_mpl_styles(ax, legend=True, grid_axis='y', ylabel=None, xlabel=No
         ax.set_xlabel(xlabel)
     if title is not None:
         ax.set_title(title)
+    if ymin is not None:
+        ax.set_ylim(ymin=ymin)
 
 
 def set_human_format(ax, on_x_axis=False, on_y_axis=False, **kwargs):

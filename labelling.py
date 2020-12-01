@@ -27,7 +27,7 @@ def format_to_base_10(num, precision=2, suffixes=['', 'k', 'M', 'G'], prefix='',
         #output = sgn + prefix + f'{num/1000.0**m:.{precision}f}{suffixes[abs(m)]}'
     else:
         # nasty hack to avoid pennies turning into kilo
-        output = sgn + prefix + f'{num:.{2}f}'
+        output = sgn + prefix + f'{num:.{precision}f}'
     return output
 
 
@@ -42,7 +42,12 @@ def test_format_to_base_10():
     assert format_to_base_10(2_000, prefix="£", precision=2)  == "£2.00k" 
 
     # what happens to 1, 0.1, 0.01?
-    # what happens to 1000.1 ?
+    assert format_to_base_10(1, precision=0) == "1"
+    assert format_to_base_10(0.1, precision=1) == "0.1"
+    assert format_to_base_10(0.01, precision=2) == "0.01"
+    assert format_to_base_10(1, precision=1) == "1.0"
+    assert format_to_base_10(0.01, precision=1) == "0.0"
+    assert format_to_base_10(1000.1, precision=1) == "1.0k" # NOTE not sure I like this!
     # add a postfix too e.g. s or m 
 
 

@@ -151,8 +151,12 @@ def test_label_interval():
     )
 
 
-def make_bin_edges(desc):
-    """desc=='0 1 ... 5' -> -np.inf, 0, 1, 2, 3, 4, 5, np.inf"""
+def make_bin_edges(desc, left_inf=True, right_inf=True):
+    """Given bin description (e.g. "1 2 ... 10") make a sequence bounded by Infs
+    
+    desc=='0 1 ... 5' -> [-np.inf, 0, 1, 2, 3, 4, 5, np.inf]
+    desc=='5 4 ... 0' -> [np.inf, 5, 4, 3, 2, 1, 0, -np.inf]
+    desc=='5 4 ... 0' -> [5, 4, 3, 2, 1, 0] if left_inf==right_inf==False"""
     parts = desc.split(' ')
     # hopefully we have floats, if not this will just die
     start = float(parts[0])
@@ -161,7 +165,20 @@ def make_bin_edges(desc):
     num = round((end - start) / step) + 1
     #print(start, end, step, num)
     bins = np.linspace(start, end, num=num)
-    bins = np.concatenate(([-np.inf], bins, [np.inf]))
+
+    # concatenate infs (if needed) and the calculated bins
+    items = []
+    left_inf_val, right_inf_val = -np.inf, np.inf
+    if step < 0:
+        # if step is descending we have to make left-inf large and right-inf small
+        left_inf_val, right_inf_val = np.inf, -np.inf
+    if left_inf:
+        items.append([left_inf_val])
+    items.append(bins)
+    if right_inf:
+        items.append([right_inf_val])
+    bins = np.concatenate(items)
+
     return bins
 
 
@@ -176,6 +193,10 @@ def test_make_bin_edges():
     np.testing.assert_allclose(bins, np.array([-np.inf, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, np.inf]), atol=1e-5)
     bins = make_bin_edges("0.0 0.1 ... 0.5")
     np.testing.assert_allclose(bins, np.array([-np.inf, 0, 0.1, 0.2, 0.3, 0.4, 0.5, np.inf]), atol=1e-5)
+    bins = make_bin_edges("0.5 0.4 ... 0.0")
+    np.testing.assert_allclose(bins, np.array([np.inf, 0.5, 0.4, 0.3, 0.2, 0.1, 0.0, -np.inf]), atol=1e-5)
+    bins = make_bin_edges("0.5 0.4 ... 0.0", left_inf=False, right_inf=False)
+    np.testing.assert_allclose(bins, np.array([0.5, 0.4, 0.3, 0.2, 0.1, 0.0]), atol=1e-5)
 
 
 # TODO should we return the result or modify in place?
@@ -197,6 +218,17 @@ def test_apply_labelling():
     assert vc.index[0] == '< 0'
     assert (vc.index == ['< 0', '[0 - 1)', '[1 - 2)', '>= 2']).all()
     assert (vc.values == [0, 0, 3, 2]).all()
+
+    items = [0.0, 0.5, 0.99, 1.0]
+    df = pd.DataFrame({'pct': items})
+    bin_edges = make_bin_edges("0.0 0.1 ... 1.0", left_inf=False)
+    int_index, counted = bin_series(items, bin_edges)
+    vc = counted.value_counts()
+    print(vc) # before formatting
+    apply_labelling(vc, format_to_base_10, prefix='', precision=1)
+    print(vc) # after formatting
+    assert (vc.index[:2] == ['[0.0 - 0.1)', '[0.1 - 0.2)']).all()
+    assert (vc.index[3:4] == ['[0.3 - 0.4)']).all()
 
 
 if __name__ == "__main__":
