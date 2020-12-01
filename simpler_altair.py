@@ -1,4 +1,3 @@
-
 # to try
 # columns='col' # will make multiple plots on that categorical
 # a | b # will make two plots side by side
@@ -15,34 +14,34 @@
 # attributes include x, y, x2, y2, xError, latitude
 
 # Note Pandas plotting not very useful
-#import altair as alt
-#pd.set_option('plotting.backend', 'altair') 
+# import altair as alt
+# pd.set_option('plotting.backend', 'altair')
 
 # Example:
-#alt.Chart(cars).mark_point().encode(
+# alt.Chart(cars).mark_point().encode(
 #    x='Horsepower', # assumes :Q
 #    y='Miles_per_Gallon', # assumed :Q
 #    color='Origin',
 #    shape='Origin')
 
 # reset index, turn int counts into comma-separated values
-#df_to_plot = df_seconds.reset_index().assign(nrows=[f'{v:,}' for v in df_seconds.index])
-#alt.Chart(df_to_plot).mark_bar().encode(
+# df_to_plot = df_seconds.reset_index().assign(nrows=[f'{v:,}' for v in df_seconds.index])
+# alt.Chart(df_to_plot).mark_bar().encode(
 # nrows has a new sort so specify the order seen in df_to_plot
 #    x=alt.X('nrows', sort=df_to_plot.nrows.values),
 # apply log scaling to y axis
 #    y= alt.Y('seconds', scale= alt.Scale(type= 'log')),
-#).properties(
+# ).properties(
 #    title='Parquet read times by row-count',
 #    width=200,
 #    height=200
-#)
+# )
 
 # https://altair-viz.github.io/user_guide/customization.html#adjusting-axis-labels
 #     x=alt.X('x', axis=alt.Axis(format='%', title='percentage')),
 # note format can be removed
 
 # sorting of index gives correct order
-#x=alt.X('index', sort=df2.index.values
+# x=alt.X('index', sort=df2.index.values
 
 # categoricals (e.g. from cut) raise a JSON encoding error, convert to string first

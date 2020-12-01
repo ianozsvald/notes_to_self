@@ -27,20 +27,21 @@ def show_all(x, head=999, tail=10):
     from IPython.display import display
 
     head = min(x.shape[0], head)
-    tail = min(x.shape[0]-head, tail)
+    tail = min(x.shape[0] - head, tail)
 
     if head > 0:
         with pd.option_context("display.max_rows", None):
             display(x.head(head))
     if tail > 0:
         if head > 0:
-            print('...')
+            print("...")
         with pd.option_context("display.max_rows", None):
             display(x.tail(tail))
 
+
 # TODO consider adding flatten index
 # https://github.com/dexplo/minimally_sufficient_pandas/blob/master/minimally_sufficient_pandas/_pandas_accessor.py#L42
-        
+
 
 # TODO
 # check value_counts in a Notebook with use_display=True
@@ -64,7 +65,7 @@ def value_counts_pct(ser, rows=10, use_display=False):
 # TODO add test
 def flatten_multiindex(gpby, index=False, columns=False):
     """Flatten MultiIndex to flat index after e.g. groupby"""
-    assert index==True or columns==True
+    assert index == True or columns == True
     gpby = gpby.copy()
     if index is True:
         new_flat_index = [
@@ -153,17 +154,17 @@ def test_label_interval():
 
 def make_bin_edges(desc, left_inf=True, right_inf=True):
     """Given bin description (e.g. "1 2 ... 10") make a sequence bounded by Infs
-    
+
     desc=='0 1 ... 5' -> [-np.inf, 0, 1, 2, 3, 4, 5, np.inf]
     desc=='5 4 ... 0' -> [np.inf, 5, 4, 3, 2, 1, 0, -np.inf]
     desc=='5 4 ... 0' -> [5, 4, 3, 2, 1, 0] if left_inf==right_inf==False"""
-    parts = desc.split(' ')
+    parts = desc.split(" ")
     # hopefully we have floats, if not this will just die
     start = float(parts[0])
     step = float(parts[1]) - float(parts[0])
     end = float(parts[3])
     num = round((end - start) / step) + 1
-    #print(start, end, step, num)
+    # print(start, end, step, num)
     bins = np.linspace(start, end, num=num)
 
     # concatenate infs (if needed) and the calculated bins
@@ -190,13 +191,23 @@ def test_make_bin_edges():
     bins = make_bin_edges("-0.5 -0.4 ... -0.3")
     np.testing.assert_allclose(bins, np.array([-np.inf, -0.5, -0.4, -0.3, np.inf]))
     bins = make_bin_edges("-0.5 -0.4 ... 0.1")
-    np.testing.assert_allclose(bins, np.array([-np.inf, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, np.inf]), atol=1e-5)
+    np.testing.assert_allclose(
+        bins,
+        np.array([-np.inf, -0.5, -0.4, -0.3, -0.2, -0.1, 0, 0.1, np.inf]),
+        atol=1e-5,
+    )
     bins = make_bin_edges("0.0 0.1 ... 0.5")
-    np.testing.assert_allclose(bins, np.array([-np.inf, 0, 0.1, 0.2, 0.3, 0.4, 0.5, np.inf]), atol=1e-5)
+    np.testing.assert_allclose(
+        bins, np.array([-np.inf, 0, 0.1, 0.2, 0.3, 0.4, 0.5, np.inf]), atol=1e-5
+    )
     bins = make_bin_edges("0.5 0.4 ... 0.0")
-    np.testing.assert_allclose(bins, np.array([np.inf, 0.5, 0.4, 0.3, 0.2, 0.1, 0.0, -np.inf]), atol=1e-5)
+    np.testing.assert_allclose(
+        bins, np.array([np.inf, 0.5, 0.4, 0.3, 0.2, 0.1, 0.0, -np.inf]), atol=1e-5
+    )
     bins = make_bin_edges("0.5 0.4 ... 0.0", left_inf=False, right_inf=False)
-    np.testing.assert_allclose(bins, np.array([0.5, 0.4, 0.3, 0.2, 0.1, 0.0]), atol=1e-5)
+    np.testing.assert_allclose(
+        bins, np.array([0.5, 0.4, 0.3, 0.2, 0.1, 0.0]), atol=1e-5
+    )
 
 
 # TODO should we return the result or modify in place?
@@ -206,29 +217,36 @@ def apply_labelling(df_ser, format_fn=None, **kwargs):
     new_index = df_ser.index.map(label_interval_args)
     df_ser.index = new_index
 
+
 # TODO make another test which tests for percentage range [0, 1.0]
 # and checks that the human printed labels are e.g. 0.1, 0.2, 0.3 with no extra dp
 def test_apply_labelling():
-    items = [1, 1, 1, 2, 3, ]
-    df = pd.DataFrame({'items': items})
+    items = [
+        1,
+        1,
+        1,
+        2,
+        3,
+    ]
+    df = pd.DataFrame({"items": items})
     bin_edges = make_bin_edges("0 1 ... 2")
     int_index, counted = bin_series(items, bin_edges)
     vc = counted.value_counts()
-    apply_labelling(vc, format_to_base_10, prefix='', precision=0)
-    assert vc.index[0] == '< 0'
-    assert (vc.index == ['< 0', '[0 - 1)', '[1 - 2)', '>= 2']).all()
+    apply_labelling(vc, format_to_base_10, prefix="", precision=0)
+    assert vc.index[0] == "< 0"
+    assert (vc.index == ["< 0", "[0 - 1)", "[1 - 2)", ">= 2"]).all()
     assert (vc.values == [0, 0, 3, 2]).all()
 
     items = [0.0, 0.5, 0.99, 1.0]
-    df = pd.DataFrame({'pct': items})
+    df = pd.DataFrame({"pct": items})
     bin_edges = make_bin_edges("0.0 0.1 ... 1.0", left_inf=False)
     int_index, counted = bin_series(items, bin_edges)
     vc = counted.value_counts()
-    print(vc) # before formatting
-    apply_labelling(vc, format_to_base_10, prefix='', precision=1)
-    print(vc) # after formatting
-    assert (vc.index[:2] == ['[0.0 - 0.1)', '[0.1 - 0.2)']).all()
-    assert (vc.index[3:4] == ['[0.3 - 0.4)']).all()
+    print(vc)  # before formatting
+    apply_labelling(vc, format_to_base_10, prefix="", precision=1)
+    print(vc)  # after formatting
+    assert (vc.index[:2] == ["[0.0 - 0.1)", "[0.1 - 0.2)"]).all()
+    assert (vc.index[3:4] == ["[0.3 - 0.4)"]).all()
 
 
 if __name__ == "__main__":
