@@ -297,6 +297,11 @@ Check dataframe cols as I go
 
 * (stupid niche) writing a custom distributed Agg `dd.Aggregation(name="sumsq", chunk=lambda s: s.aggregate(func=lambda x: np.sum(np.power(x, 2))), agg=lambda s: s.sum())` is a pain in the arse - this calculates a sum of squares on a grouped series
 
+# Conda
+
+* `conda config --show` to list all config
+* `conda info` to list general configuration
+* prefer channel_priority to be strict https://conda-forge.org/
 
 # Shell
 
