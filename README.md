@@ -205,6 +205,7 @@ ax.set_yticklabels(new_yticks);
 ## IPython
 
 * `ipython -i script.py` will end script in interactive mode, add `-i --` so that args following `script.py` don't get picked up by IPython
+* `!!ls -l` will capture CR-split list of results, use `.l` to get a list of items https://ipython.readthedocs.io/en/stable/interactive/magics.html#magic-system
 
 ## Argument parsing
 
