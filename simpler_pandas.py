@@ -21,6 +21,14 @@ dayofweek_dict = {
 }
 
 
+def show_df_details(df):
+    """Dig into _data hidden attribute, note is_consolidated check can be slow first time"""
+    print(f"""is view {df._data.is_view}, is consolidated {df._data.is_consolidated()}, single block {df._data.is_single_block}"""
+          f""", numeric mixed {df._data.is_numeric_mixed_type}""")
+    print(f"""{df._data.nblocks} blocks looking like:""")
+    print(df._data.blocks)
+
+
 def show_all(x, head=999, tail=10):
     """List more rows of DataFrame and Series results than usual"""
     # CONSIDER using 'display.max_columns' too?
