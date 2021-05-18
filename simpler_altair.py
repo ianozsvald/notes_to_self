@@ -29,8 +29,15 @@
 # alt.Chart(df_to_plot).mark_bar().encode(
 # nrows has a new sort so specify the order seen in df_to_plot
 #    x=alt.X('nrows', sort=df_to_plot.nrows.values),
+
+
 # apply log scaling to y axis
 #    y= alt.Y('seconds', scale= alt.Scale(type= 'log')),
+
+# change scale to not start at 0 
+#    x=alt.X('Year_Built', scale=alt.Scale(zero=False)),
+
+# add title and size for graph
 # ).properties(
 #    title='Parquet read times by row-count',
 #    width=200,
