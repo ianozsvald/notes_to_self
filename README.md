@@ -162,7 +162,7 @@ Marks with x and no lines: `.plot(marker='x', linestyle=' ', ax=ax)`
 
 ```
 min_val = min(ax.get_xlim()[0], ax.get_ylim()[0])
-max_val = min(ax.get_xlim()[1], ax.get_ylim()[1])
+max_val = max(ax.get_xlim()[1], ax.get_ylim()[1])
 ax.set_xlim(xmin=min_val, xmax=max_val)
 ax.set_ylim(ymin=min_val, ymax=max_val)
 ```
