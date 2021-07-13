@@ -63,7 +63,7 @@ def set_commas_olddependsonrendering(ax, on_x_axis=True, on_y_axis=True):
 
 
 def set_common_mpl_styles(
-    ax, legend=True, grid_axis="y", ylabel=None, xlabel=None, title=None, ymin=0
+    ax, legend=True, grid_axis="y", ylabel=None, xlabel=None, title=None, ymin=None, xmin=None
 ):
     ax.grid(axis=grid_axis)
     if legend == False:
@@ -78,6 +78,8 @@ def set_common_mpl_styles(
         ax.set_title(title)
     if ymin is not None:
         ax.set_ylim(ymin=ymin)
+    if xmin is not None:
+        ax.set_xlim(xmin=xmin)
 
 
 def set_human_format(ax, on_x_axis=False, on_y_axis=False, **kwargs):
