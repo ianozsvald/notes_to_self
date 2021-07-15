@@ -302,6 +302,15 @@ Check dataframe cols as I go
 
 * (stupid niche) writing a custom distributed Agg `dd.Aggregation(name="sumsq", chunk=lambda s: s.aggregate(func=lambda x: np.sum(np.power(x, 2))), agg=lambda s: s.sum())` is a pain in the arse - this calculates a sum of squares on a grouped series
 
+```
+from dask.distributed import Client
+if 'client' not in dir():
+    # useful for Pandas - no threads (Pandas not GIL-friendly), many processes
+    # and enough memory to not max out my laptop
+    client = Client(processes=True, n_workers=8, threads_per_worker=1, memory_limit='4GB')
+client # show client details
+```
+
 # Conda
 
 * `conda config --show` to list all config
