@@ -30,6 +30,10 @@
 # nrows has a new sort so specify the order seen in df_to_plot
 #    x=alt.X('nrows', sort=df_to_plot.nrows.values),
 
+# with mark_bar we can enable Bins, either `bin=True` for defaults or an alt.Bin object
+# which includes nice binning, steps, base and other useful options
+# x=alt.X('target:Q', bin=alt.Bin(maxbins=100)),
+
 
 # apply log scaling to y axis
 #    y= alt.Y('seconds', scale= alt.Scale(type= 'log')),
