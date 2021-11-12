@@ -50,8 +50,12 @@ def sanity_check(df):
             raise Warning(f'Weirdness for column {n} with value "{item}"')
 
 
+# TODO replace with warns check https://docs.pytest.org/en/latest/how-to/capture-warnings.html#warns
 def test_sanity_check():
     df = pd.DataFrame({' a': [1, 2], 'b': [3, 4], 'c ': [5, 6]})
+    # the warns test fails - why?
+    #with pytest.warns(Warning,  match='Weirdness for column 0 with " a"'):
+    #    sanity_check(df)
     with pytest.raises(Warning):
         sanity_check(df)
     df = pd.DataFrame({'Timestamp\xa0': [1, 2]})
