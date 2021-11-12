@@ -319,7 +319,10 @@ client # show client details
 
 ## Conda for this environment
 
-`$ conda create -n notes_to_self python=3.9 pandas matplotlib jupyterlab altair black`
+```
+$ conda create -n notes_to_self python=3.9 pandas matplotlib jupyterlab altair black pytest
+$ pytest *.py
+```
 
 # Shell
 
