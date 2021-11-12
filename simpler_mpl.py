@@ -18,6 +18,34 @@ import matplotlib.pyplot as plt
 # https://github.com/matplotlib/matplotlib/issues/16140
 # https://github.com/matplotlib/matplotlib/pull/16141
 
+def set_common_mpl_styles(
+    ax, legend=True, grid_axis="y", ylabel=None, xlabel=None, title=None, ymin=None, xmin=None
+):
+    """Nice common plot configuration
+    We might use it via `fig, ax = plt.subplots(constrained_layout=True, figsize=(8, 6))`
+    """
+    if grid_axis is not None:
+        # depending on major/minor grid frequency we might
+        # need the simpler form
+        #ax.grid(axis=grid_axis)
+        ax.grid(b=True, which='both', axis=grid_axis)
+    if legend == False:
+        ax.legend_.remove()
+    else:
+        ax.legend()
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    if ylabel is not None:
+        ax.set_ylabel(ylabel)
+    if xlabel is not None:
+        ax.set_xlabel(xlabel)
+    if title is not None:
+        ax.set_title(title)
+    if ymin is not None:
+        ax.set_ylim(ymin=ymin)
+    if xmin is not None:
+        ax.set_xlim(xmin=xmin)
+
 
 def rotate_labels(x_axis=False, y_axis=False, rotation=-90):
     if x_axis:
@@ -62,26 +90,8 @@ def set_commas_olddependsonrendering(ax, on_x_axis=True, on_y_axis=True):
         )
 
 
-def set_common_mpl_styles(
-    ax, legend=True, grid_axis="y", ylabel=None, xlabel=None, title=None, ymin=None, xmin=None
-):
-    ax.grid(axis=grid_axis)
-    if legend == False:
-        ax.legend_.remove()
-    ax.spines["top"].set_visible(False)
-    ax.spines["right"].set_visible(False)
-    if ylabel is not None:
-        ax.set_ylabel(ylabel)
-    if xlabel is not None:
-        ax.set_xlabel(xlabel)
-    if title is not None:
-        ax.set_title(title)
-    if ymin is not None:
-        ax.set_ylim(ymin=ymin)
-    if xmin is not None:
-        ax.set_xlim(xmin=xmin)
-
-
+# WARNING this function is broken, I need to write a
+# human_format that'll add commas as a default...
 def set_human_format(ax, on_x_axis=False, on_y_axis=False, **kwargs):
     '''Add commas e.g. 1_000_000 -> "1,000,000"'''
     if on_x_axis == False and on_y_axis == False:

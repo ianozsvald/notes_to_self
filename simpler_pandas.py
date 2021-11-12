@@ -5,6 +5,10 @@ from IPython.display import display
 import pytest
 from labelling import format_to_base_10
 
+# make_bin_edges will turn e.g. "1 2 ... 10" into [-inf, 1, 2, ..., 9, 10, inf]
+# bin_series will take the bin edges and a series and put them into bins
+# apply_labelling will format any series
+# see example in __main__
 
 # GroupBy notes
 # dfs.groupby([dfs.date.dt.year]) # can group on Series rather than name
@@ -29,6 +33,35 @@ def show_df_details(df):
     print(df._data.blocks)
 
 
+def sanity_check(df):
+    """Raise warnings if weirdness found"""
+    # TODO could consider using unidecode to check for weirdness
+    # TODO for object cols apply same sanity checks
+    # check for strange things in columns
+    for n, item in enumerate(df.columns):
+        weird = False
+        if item != item.strip():
+            # check for whitespace at start or end of column entry
+            weird = True
+        if '\xa0' in item:
+            # check for non-breaking space
+            weird = True
+        if weird:
+            raise Warning(f'Weirdness for column {n} with value "{item}"')
+
+
+def test_sanity_check():
+    df = pd.DataFrame({' a': [1, 2], 'b': [3, 4], 'c ': [5, 6]})
+    with pytest.raises(Warning):
+        sanity_check(df)
+    df = pd.DataFrame({'Timestamp\xa0': [1, 2]})
+    with pytest.raises(Warning):
+        sanity_check(df)
+    df = pd.DataFrame({'Timestamp\xa0value': [1, 2]})
+    with pytest.raises(Warning):
+        sanity_check(df)
+
+
 def show_all(x, head=999, tail=10):
     """List more rows of DataFrame and Series results than usual"""
     # CONSIDER using 'display.max_columns' too?
@@ -46,9 +79,6 @@ def show_all(x, head=999, tail=10):
         with pd.option_context("display.max_rows", None):
             display(x.tail(tail))
 
-
-# TODO consider adding flatten index
-# https://github.com/dexplo/minimally_sufficient_pandas/blob/master/minimally_sufficient_pandas/_pandas_accessor.py#L42
 
 
 # TODO
@@ -71,93 +101,51 @@ def value_counts_pct(ser, rows=10, use_display=False):
 
 
 # TODO add test
-def flatten_multiindex(gpby, index=False, columns=False):
-    """Flatten MultiIndex to flat index after e.g. groupby"""
-    assert index == True or columns == True
-    gpby = gpby.copy()
+# https://github.com/dexplo/minimally_sufficient_pandas/blob/master/minimally_sufficient_pandas/_pandas_accessor.py#L42
+def flatten_multiindex(df, on=None):
+    """Flatten MultiIndex to flat index after e.g. groupby, on can be automatic (None) or index or columns"""
+    df = df.copy()
+    if on is None:
+        index = hasattr(df.index, 'levels')
+        columns = hasattr(df.columns, 'levels')
+    else:
+        index = (on == 'index' or on == 'both')
+        columns = (on == 'columns' or on == 'both')
     if index is True:
         new_flat_index = [
-            "_".join(str(s) for s in multi_index) for multi_index in gpby.index.values
+            "_".join(str(s) for s in multi_index) for multi_index in df.index.values
         ]
-        # gpby = gpby.reset_index(drop=True)
-        gpby.index = new_flat_index
+        df.index = new_flat_index
     if columns is True:
         new_flat_index = [
-            "_".join(str(s) for s in multi_index) for multi_index in gpby.columns.values
+            "_".join(str(s) for s in multi_index) for multi_index in df.columns.values
         ]
-        # gpby = gpby.reset_index(drop=True)
-        gpby.columns = new_flat_index
-    return gpby
+        df.columns = new_flat_index
+    return df
 
 
-# TODO add test
-# TODO let me label <= >= for the extremes, maybe let me make a nice range with a convenience fist?
-# int_index._data.to_numpy()[0] this gives Interval items, maybe I need to override this somehow to build a better display?
-# pandas._libs.interval.Interval from type(int_index._data.to_numpy()[0])
-def bin_series(dist, bin_edges):
-    interval_index = pd.IntervalIndex.from_breaks(bin_edges, closed="left")
-    cat = pd.cut(dist, interval_index)
-    return interval_index, cat
+def test_flatten_multiindex():
+    # TODO need to make a dual multiindex test
+    df = pd.DataFrame({'a': ['a', 'a', 'b', 'b'], 'b': [0, 1, 2, 3], 'c': [6, 7, 8, 9]})
+    # flatten multiindex on index
+    df_flattened = flatten_multiindex(df.set_index(['a', 'b']), on='index')
+    assert df_flattened.index[0] == 'a_0'
+    assert df_flattened.index[3] == 'b_3'
+    # do the same automatically
+    df_flattened = flatten_multiindex(df.set_index(['a', 'b']))
+    assert df_flattened.index[0] == 'a_0'
+    assert df_flattened.index[3] == 'b_3'
 
+    # do the same on columns
+    df_flattened = flatten_multiindex(df.set_index(['a', 'b']).T, on='columns')
+    assert df_flattened.columns[0] == 'a_0'
+    assert df_flattened.columns[3] == 'b_3'
 
-def test_bin_series():
-    dist = np.array([-100, 0, 5])
-    bin_edges = [-np.inf, -1000, 0, 1000]
-    int_index, counted = bin_series(dist, bin_edges)
-    assert (counted.value_counts().values == np.array([0, 1, 2])).all()
-    display(counted.value_counts().sort_index(ascending=True))
+    # detect columns automatically
+    df_flattened = flatten_multiindex(df.set_index(['a', 'b']).T)
+    assert df_flattened.columns[0] == 'a_0'
+    assert df_flattened.columns[3] == 'b_3'
 
-
-# TODO make right-closed too
-def label_interval(interval, format_fn=None, **kwargs):
-    left = interval.left
-    if not np.isinf(left):
-        if format_fn is not None:
-            left = format_fn(left, **kwargs)
-    right = interval.right
-    if not np.isinf(right):
-        if format_fn is not None:
-            right = format_fn(right, **kwargs)
-    if interval.closed_left:
-        if np.isinf(interval.left):
-            label = f"< {right}"
-        elif np.isinf(interval.right):
-            label = f">= {left}"
-        else:
-            label = f"[{left} - {right})"
-
-    return label
-
-
-def test_label_interval():
-    bin_edges = [-np.inf, -1000, 0, np.inf]
-    int_index = pd.IntervalIndex.from_breaks(bin_edges, closed="left")
-    interval = int_index._data.to_numpy()[0]  # Interval(-inf, -1000.0, closed='left')
-    assert label_interval(interval) == "< -1000.0"
-    interval = int_index._data.to_numpy()[1]  # Interval(-1000.0, 0.0, closed='left')
-    assert label_interval(interval) == "[-1000.0 - 0.0)"
-    interval = int_index._data.to_numpy()[2]  # Interval(0.0, 1000.0, closed='left')
-    assert label_interval(interval) == ">= 0.0"
-
-    interval = int_index._data.to_numpy()[0]
-    assert label_interval(interval, format_to_base_10, trim_0_decimals=True) == "< -1k"
-    interval = int_index._data.to_numpy()[1]
-    assert (
-        label_interval(interval, format_to_base_10, trim_0_decimals=True) == "[-1k - 0)"
-    )
-    interval = int_index._data.to_numpy()[2]
-    assert label_interval(interval, format_to_base_10, trim_0_decimals=True) == ">= 0"
-
-    interval = int_index._data.to_numpy()[0]
-    assert (
-        label_interval(interval, format_to_base_10, trim_0_decimals=True, prefix="£")
-        == "< -£1k"
-    )
-    interval = int_index._data.to_numpy()[1]
-    assert (
-        label_interval(interval, format_to_base_10, trim_0_decimals=True, prefix="£")
-        == "[-£1k - £0)"
-    )
 
 
 def make_bin_edges(desc, left_inf=True, right_inf=True):
@@ -218,16 +206,81 @@ def test_make_bin_edges():
     )
 
 
-# TODO should we return the result or modify in place?
-def apply_labelling(df_ser, format_fn=None, **kwargs):
+def bin_series(dist, bin_edges):
+    """Bin a series using specified bin_edges"""
+    interval_index = pd.IntervalIndex.from_breaks(bin_edges, closed="left")
+    binned = pd.cut(dist, interval_index)
+    return binned
+
+
+def test_bin_series():
+    dist = np.array([-100, 0, 5])
+    bin_edges = [-np.inf, -1000, 0, 1000]
+    counted = bin_series(dist, bin_edges)
+    assert (counted.value_counts().values == np.array([0, 1, 2])).all()
+    display(counted.value_counts().sort_index(ascending=True))
+
+
+# TODO make right-closed too
+def label_interval(interval, format_fn=None, **kwargs):
+    """Internal function to make a friendly human interval label e.g. [-1 - 0)"""
+    left = interval.left
+    if not np.isinf(left):
+        if format_fn is not None:
+            left = format_fn(left, **kwargs)
+    right = interval.right
+    if not np.isinf(right):
+        if format_fn is not None:
+            right = format_fn(right, **kwargs)
+    if interval.closed_left:
+        if np.isinf(interval.left):
+            label = f"< {right}"
+        elif np.isinf(interval.right):
+            label = f">= {left}"
+        else:
+            label = f"[{left} - {right})"
+
+    return label
+
+
+def test_label_interval():
+    bin_edges = [-np.inf, -1000, 0, np.inf]
+    int_index = pd.IntervalIndex.from_breaks(bin_edges, closed="left")
+    interval = int_index._data.to_numpy()[0]  # Interval(-inf, -1000.0, closed='left')
+    assert label_interval(interval) == "< -1000.0"
+    interval = int_index._data.to_numpy()[1]  # Interval(-1000.0, 0.0, closed='left')
+    assert label_interval(interval) == "[-1000.0 - 0.0)"
+    interval = int_index._data.to_numpy()[2]  # Interval(0.0, 1000.0, closed='left')
+    assert label_interval(interval) == ">= 0.0"
+
+    interval = int_index._data.to_numpy()[0]
+    assert label_interval(interval, format_to_base_10, trim_0_decimals=True) == "< -1k"
+    interval = int_index._data.to_numpy()[1]
+    assert (
+        label_interval(interval, format_to_base_10, trim_0_decimals=True) == "[-1k - 0)"
+    )
+    interval = int_index._data.to_numpy()[2]
+    assert label_interval(interval, format_to_base_10, trim_0_decimals=True) == ">= 0"
+
+    interval = int_index._data.to_numpy()[0]
+    assert (
+        label_interval(interval, format_to_base_10, trim_0_decimals=True, prefix="£")
+        == "< -£1k"
+    )
+    interval = int_index._data.to_numpy()[1]
+    assert (
+        label_interval(interval, format_to_base_10, trim_0_decimals=True, prefix="£")
+        == "[-£1k - £0)"
+    )
+
+
+def apply_labelling(ser, format_fn=None, **kwargs):
     """Modify index using labelling function"""
     label_interval_args = partial(label_interval, format_fn=format_fn, **kwargs)
-    new_index = df_ser.index.map(label_interval_args)
-    df_ser.index = new_index
+    new_index = ser.map(label_interval_args)
+    return new_index
 
 
-# TODO make another test which tests for percentage range [0, 1.0]
-# and checks that the human printed labels are e.g. 0.1, 0.2, 0.3 with no extra dp
 def test_apply_labelling():
     items = [
         1,
@@ -238,9 +291,9 @@ def test_apply_labelling():
     ]
     df = pd.DataFrame({"items": items})
     bin_edges = make_bin_edges("0 1 ... 2")
-    int_index, counted = bin_series(items, bin_edges)
+    counted = bin_series(items, bin_edges)
     vc = counted.value_counts()
-    apply_labelling(vc, format_to_base_10, prefix="", precision=0)
+    vc.index = apply_labelling(vc.index, format_to_base_10, prefix="", precision=0)
     assert vc.index[0] == "< 0"
     assert (vc.index == ["< 0", "[0 - 1)", "[1 - 2)", ">= 2"]).all()
     assert (vc.values == [0, 0, 3, 2]).all()
@@ -248,13 +301,35 @@ def test_apply_labelling():
     items = [0.0, 0.5, 0.99, 1.0]
     df = pd.DataFrame({"pct": items})
     bin_edges = make_bin_edges("0.0 0.1 ... 1.0", left_inf=False)
-    int_index, counted = bin_series(items, bin_edges)
+    counted = bin_series(items, bin_edges)
     vc = counted.value_counts()
     print(vc)  # before formatting
-    apply_labelling(vc, format_to_base_10, prefix="", precision=1)
+    vc.index = apply_labelling(vc.index, format_to_base_10, prefix="", precision=1)
     print(vc)  # after formatting
     assert (vc.index[:2] == ["[0.0 - 0.1)", "[0.1 - 0.2)"]).all()
     assert (vc.index[3:4] == ["[0.3 - 0.4)"]).all()
+
+
+def test_apply_labelling_percent():
+    items = [0, 0.1, 0.8, 0.99, 1.0]
+    df = pd.DataFrame({"items": items})
+    bin_edges = make_bin_edges("0 0.2 ... 1.0")
+    counted = bin_series(items, bin_edges)
+    vc = counted.value_counts()
+    vc.index = apply_labelling(vc.index, format_to_base_10, prefix="", precision=1)
+    print(vc)
+    assert vc.index[0] == "< 0.0"
+    assert (vc.index == ["< 0.0", "[0.0 - 0.2)", "[0.2 - 0.4)", "[0.4 - 0.6)", "[0.6 - 0.8)", "[0.8 - 1.0)", ">= 1.0"]).all()
+    assert (vc.values == [0, 2, 0, 0, 0, 2, 1]).all()
+
+    items = [0, 10, 80, 99, 100]
+    df = pd.DataFrame({"items": items})
+    bin_edges = make_bin_edges("0 20 ... 100")
+    counted = bin_series(items, bin_edges)
+    vc = counted.value_counts()
+    vc.index = apply_labelling(vc.index, format_to_base_10, prefix="", postfix='%', precision=0)
+    print(vc)
+    assert (vc.index == ["< 0%", "[0% - 20%)", "[20% - 40%)", "[40% - 60%)", "[60% - 80%)", "[80% - 100%)", ">= 100%"]).all()
 
 
 if __name__ == "__main__":
@@ -268,8 +343,7 @@ if __name__ == "__main__":
     print("Normal distribution, check that bins catch everything")
     dist = np.random.normal(loc=0, scale=1, size=1000)
 
-    bin_edges = make_bin_edges("-3 -2 ... 3")
-    int_index, counted = bin_series(dist, bin_edges)
+    counted = bin_series(dist, make_bin_edges("-3 -2 ... 3"))
     counted_vc = counted.value_counts()
-    apply_labelling(counted_vc, format_to_base_10, prefix="$")
+    counted_vc.index = apply_labelling(counted_vc.index, format_to_base_10, prefix="$")
     show_all(counted_vc)

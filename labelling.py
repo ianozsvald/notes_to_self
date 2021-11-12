@@ -2,7 +2,7 @@ import math
 
 
 def format_to_base_10(
-    num, precision=2, suffixes=["", "k", "M", "G"], prefix="", trim_0_decimals=False
+    num, precision=2, suffixes=["", "k", "M", "G"], prefix="", postfix="", trim_0_decimals=False
 ):
     """Turn 1_234_000 into 1.23M"""
     # TODO consider different suffixes, either a fixed set
@@ -10,6 +10,7 @@ def format_to_base_10(
     is_negative = num < 0
     num = abs(num)
     try:
+        # test if we have 3+ digit mantissa
         m = int(math.log10(num) // 3)
     except ValueError:
         # handle num of 0
@@ -26,11 +27,11 @@ def format_to_base_10(
                 # no decimals
                 short_form = int(short_form)
                 short_form_template = f"{short_form}"
-        output = sgn + prefix + short_form_template + f"{suffixes[abs(m)]}"
+        output = sgn + prefix + short_form_template + f"{suffixes[abs(m)]}" + postfix
         # output = sgn + prefix + f'{num/1000.0**m:.{precision}f}{suffixes[abs(m)]}'
     else:
         # nasty hack to avoid pennies turning into kilo
-        output = sgn + prefix + f"{num:.{precision}f}"
+        output = sgn + prefix + f"{num:.{precision}f}" + postfix
     return output
 
 
@@ -56,7 +57,11 @@ def test_format_to_base_10():
     assert (
         format_to_base_10(1000.1, precision=1) == "1.0k"
     )  # NOTE not sure I like this!
-    # add a postfix too e.g. s or m
+    
+    # TODO add a postfix too e.g. s or m
+    assert format_to_base_10(1, precision=0, postfix="%") == "1%"
+    assert format_to_base_10(-1, precision=0, postfix="%") == "-1%"
+    assert format_to_base_10(0.1, precision=1, postfix="%") == "0.1%"
 
 
 if __name__ == "__main__":
