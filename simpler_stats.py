@@ -1,12 +1,18 @@
 """Calculate and estimate 95th CI bounds for a binary value"""
 import numpy as np
 
+# binomial test for no-successes by random sampling
+# sum(np.random.binomial(9, 0.1, 20000) == 0)/20000. # given 9 cold sales calls with a 10% chance of success, what's the chance that all 9 had no success? 38%
+
 # TODO
 # add test for both, same arr, check for outer likely bounds
 # 95th > 5th etc
 
 rng = np.random.default_rng()
 
+# NOTE these are hardcoded to certain ranges, need to simplify this
+# so calculate_ci generates a 1se (not 95th percentile) interval
+# and calculate_bootstrap_ci gives any requested percentiles
 
 def calculate_ci(arr):
     p = arr.mean()
@@ -18,7 +24,7 @@ def calculate_ci(arr):
     return p-se_95, p, p+se_95
     
 
-def calculate_bookstrap_ci(arr, repeats=1000):
+def calculate_bootstrap_ci(arr, repeats=1000):
     """Build repeats' worth of bootstrap samples, calculate percentiles"""
     pc2_5_idx = int(repeats * 0.025)
     pc50_idx = int(repeats * 0.5)
@@ -40,5 +46,5 @@ if __name__ == "__main__":
     arr = rng.binomial(1, 0.5, 1000)
     arr = arr < 0.01
     print(calculate_ci(arr))
-    print(calculate_bookstrap_ci(arr))
+    print(calculate_bootstrap_ci(arr))
 
