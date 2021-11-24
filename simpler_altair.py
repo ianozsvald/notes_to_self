@@ -56,3 +56,5 @@
 # x=alt.X('index', sort=df2.index.values
 
 # categoricals (e.g. from cut) raise a JSON encoding error, convert to string first
+
+# Encodings are :O :Q :N :T :G https://altair-viz.github.io/user_guide/encoding.html#encoding-data-types
