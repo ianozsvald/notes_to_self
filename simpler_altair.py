@@ -17,12 +17,16 @@
 # import altair as alt
 # pd.set_option('plotting.backend', 'altair')
 
+# marks - https://altair-viz.github.io/user_guide/marks.html
+# mark_line/mark_bar/mark_point
+
 # Example:
 # alt.Chart(cars).mark_point().encode(
 #    x='Horsepower', # assumes :Q
 #    y='Miles_per_Gallon', # assumed :Q
 #    color='Origin',
-#    shape='Origin')
+#    shape='Origin',
+#     tooltip=['Horsepower'])
 
 # reset index, turn int counts into comma-separated values
 # df_to_plot = df_seconds.reset_index().assign(nrows=[f'{v:,}' for v in df_seconds.index])
