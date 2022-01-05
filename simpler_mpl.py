@@ -28,8 +28,8 @@ def set_common_mpl_styles(
         # depending on major/minor grid frequency we might
         # need the simpler form
         #ax.grid(axis=grid_axis)
-        ax.grid(b=True, which='both', axis=grid_axis)
-    if legend == False:
+        ax.grid(visible=True, which='both', axis=grid_axis)
+    if legend is False:
         ax.legend_.remove()
     else:
         ax.legend()
