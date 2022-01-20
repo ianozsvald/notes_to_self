@@ -30,9 +30,9 @@
 
 * Pandas better describe - colour the percentiles, not the counts/mean/std, include 5/95% in percentiles. Add dtype description and maybe memory, not how many columns were ignored too (stick on the end maybe?)
 
-* Pandas better cut - give it some ranges and ask for nice labels and it'll form e.g. in scientific form (1M-500k ...) with open/closed labels, maybe special handling of e.g. 0, with formatting for currency and others - in progress in `simpler_pandas`
+* Pandas better cut - give it some ranges and ask for nice labels and it'll form e.g. in scientific form (1M-500k ...) with open/closed labels, maybe special handling of e.g. 0, with formatting for currency and others - in progress in `simpler_pandas.bin_series` and `apply_labelling`.
 
-* Matplotlib label formatter - take int/float labels and convert to eg currency (2dp), human readable (e.g. 1M), optional leading symbol (e.g. £, $) or trailing text (e.g. pp.), with commas (e.g. "2,000") `friendly_label(dp=2, leading_text="", following_text="", with_commas=False, ints_if_possible=False)` and `human_readable(...)`
+* Matplotlib label formatter - take int/float labels and convert to eg currency (2dp), human readable (e.g. 1M), optional leading symbol (e.g. £, $) or trailing text (e.g. pp.), with commas (e.g. "2,000") `friendly_label(dp=2, leading_text="", following_text="", with_commas=False, ints_if_possible=False)` and `human_readable(...)` -> in progress in `labelling.format_to_base_10`.
 
 ## NumPy
 
