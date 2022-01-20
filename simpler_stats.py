@@ -17,15 +17,16 @@ rng = np.random.default_rng()
 # so calculate_ci generates a 1se (not 95th percentile) interval
 # and calculate_bootstrap_ci gives any requested percentiles
 
+
 def calculate_ci(arr):
     p = arr.mean()
-    q = 1-p
+    q = 1 - p
     n = arr.shape[0]
     # 1.96 yields 95th CI (not 95.4th)
     se_95 = np.sqrt((p * q) / n) * 1.96
     print(f"mean {p:0.3f}, 2.5th CI {p-se_95:0.3f}, 97.5th CI {p+se_95:0.3f}")
-    return p-se_95, p, p+se_95
-    
+    return p - se_95, p, p + se_95
+
 
 def calculate_bootstrap_ci(arr, repeats=1000):
     """Build repeats' worth of bootstrap samples, calculate percentiles"""
@@ -41,7 +42,9 @@ def calculate_bootstrap_ci(arr, repeats=1000):
         means.append(arr2.mean())
     means = np.array(means)
     means.sort()
-    print(f"Bootstrap mean {means[pc50_idx]:0.3f}, 2.5th CI {means[pc2_5_idx]:0.3f}, 97.5th CI {means[pc97_5_idx]:0.3f}")
+    print(
+        f"Bootstrap mean {means[pc50_idx]:0.3f}, 2.5th CI {means[pc2_5_idx]:0.3f}, 97.5th CI {means[pc97_5_idx]:0.3f}"
+    )
     return means[percentiles]
 
 
@@ -50,4 +53,3 @@ if __name__ == "__main__":
     arr = arr < 0.01
     print(calculate_ci(arr))
     print(calculate_bootstrap_ci(arr))
-

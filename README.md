@@ -252,9 +252,15 @@ Typically we'd write `pytest` to execute it, there's something weird with being 
 
 `$ coverage run -m unittest test_all.py` (or e.g. `discover` to discover all test files) writes an sqlite3 `.coverage` datafile, `$ coverage report html` generates `./htmlcov/` and `firefox htmlcov/index.html` opens the html report. `coverage erase` to wipe db. Notes: https://coverage.readthedocs.io/en/coverage-5.1/
 
+`$ coverage run -m pytest homework_is_prime.py` as above
+
 `$ pytest --cov=. --cov-report=html exercise_is_prime.py` will report on all code ( `--cov=my_module` would restrict to that module) by running named file.
 
 `$ pytest --cov=. --cov-report=html --ignore=src --ignore=tests/test_something_to_ignore.py` will report on all, ignoring any test file discovered in `src` (e.g. an experiment that's been called `test_my_idea.py`) and will ignore the specified test (which might need e.g. extra credentials that we haven't setup).
+
+#### To run coverage on this project
+
+`$ pytest --cov=. --cov-report=html test*.py`, `$ firefox htmlcov/index.html` and `coverage erase`.
 
 ## Profiling
 

@@ -2,8 +2,39 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from simpler_pandas import make_bin_edges, bin_series, apply_labelling, sanity_check, flatten_multiindex, display, label_interval
+from simpler_pandas import (
+    make_bin_edges,
+    bin_series,
+    apply_labelling,
+    sanity_check,
+    flatten_multiindex,
+    display,
+    label_interval,
+    show_df_details,
+    show_all
+)
 from labelling import format_to_base_10
+
+# TODO value_counts_pct has no tests yet
+
+def test_show_all(capsys):
+    # TODO run coverage, currently we don't test everything
+    df = pd.DataFrame({'a': [1, 2, 3]})
+    show_all(df)
+    captured = capsys.readouterr()
+    assert "0  1" in captured.out
+
+def test_show_df_details(capsys):
+    # TODO capture more stdout and check I agree
+    # this will also flag if a future Pandas version changes their internals!
+    # Example output would be like
+    # 'is view False, is consolidated True, single block True, numeric mixed True\n1 blocks looking like:\n(NumericBlock: ...
+    df = pd.DataFrame({'a': [1, 2, 3]})
+    show_df_details(df)
+    captured = capsys.readouterr()
+    assert "is view False" in captured.out
+    assert "numeric mixed True" in captured.out
+
 
 # TODO replace with warns check https://docs.pytest.org/en/latest/how-to/capture-warnings.html#warns
 def test_sanity_check():
@@ -118,7 +149,7 @@ def test_apply_labelling():
         2,
         3,
     ]
-    #df = pd.DataFrame({"items": items})
+    # df = pd.DataFrame({"items": items})
     bin_edges = make_bin_edges("0 1 ... 2")
     counted = bin_series(items, bin_edges)
     vc = counted.value_counts()
@@ -128,7 +159,7 @@ def test_apply_labelling():
     assert (vc.values == [0, 0, 3, 2]).all()
 
     items = [0.0, 0.5, 0.99, 1.0]
-    #df = pd.DataFrame({"pct": items})
+    # df = pd.DataFrame({"pct": items})
     bin_edges = make_bin_edges("0.0 0.1 ... 1.0", left_inf=False)
     counted = bin_series(items, bin_edges)
     vc = counted.value_counts()
@@ -163,7 +194,7 @@ def test_apply_labelling_percent():
     assert (vc.values == [0, 2, 0, 0, 0, 2, 1]).all()
 
     items = [0, 10, 80, 99, 100]
-    #df = pd.DataFrame({"items": items})
+    # df = pd.DataFrame({"items": items})
     bin_edges = make_bin_edges("0 20 ... 100")
     counted = bin_series(items, bin_edges)
     vc = counted.value_counts()

@@ -42,7 +42,7 @@
 # apply log scaling to y axis
 #    y= alt.Y('seconds', scale= alt.Scale(type= 'log')),
 
-# change scale to not start at 0 
+# change scale to not start at 0
 #    x=alt.X('Year_Built', scale=alt.Scale(zero=False)),
 
 # add title and size for graph

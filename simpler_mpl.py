@@ -18,8 +18,16 @@ import matplotlib.pyplot as plt
 # https://github.com/matplotlib/matplotlib/issues/16140
 # https://github.com/matplotlib/matplotlib/pull/16141
 
+
 def set_common_mpl_styles(
-    ax, legend=True, grid_axis="y", ylabel=None, xlabel=None, title=None, ymin=None, xmin=None
+    ax,
+    legend=True,
+    grid_axis="y",
+    ylabel=None,
+    xlabel=None,
+    title=None,
+    ymin=None,
+    xmin=None,
 ):
     """Nice common plot configuration
     We might use it via `fig, ax = plt.subplots(constrained_layout=True, figsize=(8, 6))`
@@ -27,8 +35,8 @@ def set_common_mpl_styles(
     if grid_axis is not None:
         # depending on major/minor grid frequency we might
         # need the simpler form
-        #ax.grid(axis=grid_axis)
-        ax.grid(visible=True, which='both', axis=grid_axis)
+        # ax.grid(axis=grid_axis)
+        ax.grid(visible=True, which="both", axis=grid_axis)
     if legend is False:
         ax.legend_.remove()
     else:
