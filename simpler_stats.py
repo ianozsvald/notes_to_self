@@ -1,6 +1,9 @@
 """Calculate and estimate 95th CI bounds for a binary value"""
 import numpy as np
 
+# WARNING
+# THIS IS ALL VERY ALPHA CODE, IT NEEDS SORTING OUT!
+
 # binomial test for no-successes by random sampling
 # sum(np.random.binomial(9, 0.1, 20000) == 0)/20000. # given 9 cold sales calls with a 10% chance of success, what's the chance that all 9 had no success? 38%
 
