@@ -11,25 +11,27 @@ from simpler_pandas import (
     display,
     label_interval,
     show_df_details,
-    show_all
+    show_all,
 )
 from labelling import format_to_base_10
 
 # TODO value_counts_pct has no tests yet
 
+
 def test_show_all(capsys):
     # TODO run coverage, currently we don't test everything
-    df = pd.DataFrame({'a': [1, 2, 3]})
+    df = pd.DataFrame({"a": [1, 2, 3]})
     show_all(df)
     captured = capsys.readouterr()
     assert "0  1" in captured.out
+
 
 def test_show_df_details(capsys):
     # TODO capture more stdout and check I agree
     # this will also flag if a future Pandas version changes their internals!
     # Example output would be like
     # 'is view False, is consolidated True, single block True, numeric mixed True\n1 blocks looking like:\n(NumericBlock: ...
-    df = pd.DataFrame({'a': [1, 2, 3]})
+    df = pd.DataFrame({"a": [1, 2, 3]})
     show_df_details(df)
     captured = capsys.readouterr()
     assert "is view False" in captured.out
