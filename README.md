@@ -325,6 +325,7 @@ client # show client details
 
 ```
 $ conda create -n notes_to_self python=3.9 pandas matplotlib jupyterlab altair black pytest
+$ conda create -n notes_to_self python=3.10 pandas matplotlib jupyterlab altair black pytest pytest-cov flake8 pandas-vet flake8-bugbear flake8-variables-names
 $ pytest *.py
 ```
 
