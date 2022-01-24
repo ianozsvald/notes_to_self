@@ -107,10 +107,12 @@ def set_human_format(ax, on_x_axis=False, on_y_axis=False, **kwargs):
     if on_x_axis:
         axis = ax.get_xaxis()
         axis.set_major_formatter(
+            # OLD mpl.ticker.FuncFormatter(lambda x, p: f"{results_to_plot_df.index[x]:0.0f}%")
             mpl.ticker.FuncFormatter(lambda x, p: human_format(x, **kwargs))
         )
     if on_y_axis:
         axis = ax.get_yaxis()
         axis.set_major_formatter(
+            # OLD mpl.ticker.FuncFormatter(lambda x, p: f"{int(x):,}")
             mpl.ticker.FuncFormatter(lambda x, p: human_format(x, **kwargs))
         )
