@@ -25,6 +25,12 @@ dayofweek_dict = {
 }
 
 
+def check_series_is_ordered(ser, ascending=True):
+    """Check 1 series is ascending"""
+    assert ascending==True, "Haven't done descending yet, nor tested this"
+    return (ser.shift()[1:].reset_index(drop=True) >= ser[:-1].reset_index(drop=True)).all()
+
+
 def show_df_details(df):
     """Dig into _data hidden attribute, note is_consolidated check can be slow first time"""
     print(
