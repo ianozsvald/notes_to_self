@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 # fig, axs = plt.subplot_mosaic(['A', 'B'], ...) # name and describe the layout https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot_mosaic.html
 # ax.get_legend().remove() # remove a legend (another way)
 
+# axs['Uplift'].yaxis.set_major_formatter(StrMethodFormatter('${x:0.0f}')) # apply a standard formatter e.g. floats with no decimal place and dollar sign
+
 # configure font
 # font = {'family': 'FreeSans', 'size': 20}
 # mpl.rc('font', **font)
