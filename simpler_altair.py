@@ -38,12 +38,19 @@
 # which includes nice binning, steps, base and other useful options
 # x=alt.X('target:Q', bin=alt.Bin(maxbins=100)),
 
+# set limits
+#    y = alt.Y(col, scale=alt.Scale(domain=(min, max))
+# https://altair-viz.github.io/user_guide/customization.html
 
 # apply log scaling to y axis
 #    y= alt.Y('seconds', scale= alt.Scale(type= 'log')),
 
 # change scale to not start at 0
 #    x=alt.X('Year_Built', scale=alt.Scale(zero=False)),
+
+# set color for a binary column
+#    color=alt.Color('is_duplicate:O', scale=alt.Scale(domain=[0, 1], range=['red', 'green']))
+
 
 # add title and size for graph
 # ).properties(
