@@ -2,7 +2,7 @@ import math
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 
-# fig, ax = plt.subplots(constrained_layout=True)
+# fig, ax = plt.subplots(constrained_layout=True, figsize=(4, 4))
 # fig, axs = plt.subplot_mosaic(['A', 'B'], ...) # name and describe the layout https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplot_mosaic.html
 # ax.get_legend().remove() # remove a legend (another way)
 
