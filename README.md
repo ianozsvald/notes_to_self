@@ -72,7 +72,8 @@ Merging is the underlying operation, `df.join` is a shortcut into `merge`.  `joi
 
 `indicator=True` adds `_merge` column with indicators like `both`. 
 
-`validate='many_to_one'` validates uniqueness on the right (or left or both), raising `MergeError` if not validated. Really ought to do an assert on the before-and-after-row-count as if e.g. on a `left` join we have repeated keys on the right side, we'll expand the resulting dataframe silently! Note the `validate` argument does this in Pandas but with Dask you have to do it manually (so for 2020 - better to be safe).
+`validate='many_to_one'` validates uniqueness on the right (or left or both), raising `MergeError` if not validated. Really ought to do an assert on the before-and-after-row-count as if e.g. on a `left` join we have repeated keys on the right side, we'll expand the resulting dataframe silently! Note the `validate` argument does this in Pandas but with 
+you have to do it manually (so for 2020 - better to be safe).
 
 ### `concatenate`
 
@@ -322,6 +323,8 @@ if 'client' not in dir():
     client = Client(processes=True, n_workers=8, threads_per_worker=1, memory_limit='4GB')
 client # show client details
 ```
+
+Use `dask.config.set(temporary_directory='/path/to/tmp')` to set temp folder if we run out of disk (h/t https://stackoverflow.com/questions/40042748/how-to-specify-the-directory-that-dask-uses-for-temporary-files https://docs.dask.org/en/stable/configuration.html)
 
 # Conda
 
