@@ -7,6 +7,8 @@ import matplotlib.pyplot as plt
 # ax.get_legend().remove() # remove a legend (another way)
 
 # axs['Uplift'].yaxis.set_major_formatter(StrMethodFormatter('${x:0.0f}')) # apply a standard formatter e.g. floats with no decimal place and dollar sign
+# ax.yaxis.set_major_formatter(lambda x, pos: f"{int(x/1000):,}k") # x will be numeric if that's what we'veplotted
+# ax.yaxis.set_major_formatter(lambda x, pos: f"{x:,.1f}") # e.g. 100,000.0
 
 # configure font
 # font = {'family': 'FreeSans', 'size': 20}
