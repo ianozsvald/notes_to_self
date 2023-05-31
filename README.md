@@ -324,7 +324,7 @@ if 'client' not in dir():
 client # show client details
 ```
 
-Use `dask.config.set(temporary_directory='/path/to/tmp')` to set temp folder if we run out of disk (h/t https://stackoverflow.com/questions/40042748/how-to-specify-the-directory-that-dask-uses-for-temporary-files https://docs.dask.org/en/stable/configuration.html)
+Use `dask.config.set(temporary_directory='/path/to/tmp')` to set temp folder if we run out of disk (h/t https://stackoverflow.com/questions/40042748/how-to-specify-the-directory-that-dask-uses-for-temporary-files https://docs.dask.org/en/stable/configuration.html). To confirm this open the Web UI (maybe on http://127.0.0.1:8787/status), go to Info, logs, then check early output to see the entry for "Directory".
 
 # Conda
 
