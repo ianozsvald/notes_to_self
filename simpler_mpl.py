@@ -44,7 +44,8 @@ def set_common_mpl_styles(
         # ax.grid(axis=grid_axis)
         ax.grid(visible=True, which="both", axis=grid_axis)
     if legend is False:
-        ax.legend_.remove()
+        if ax.legend_:
+            ax.legend_.remove()
     else:
         ax.legend()
     ax.spines["top"].set_visible(False)
