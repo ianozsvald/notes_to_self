@@ -328,11 +328,18 @@ client # show client details
 
 Use `dask.config.set(temporary_directory='/path/to/tmp')` to set temp folder if we run out of disk (h/t https://stackoverflow.com/questions/40042748/how-to-specify-the-directory-that-dask-uses-for-temporary-files https://docs.dask.org/en/stable/configuration.html). To confirm this open the Web UI (maybe on http://127.0.0.1:8787/status), go to Info, logs, then check early output to see the entry for "Directory".
 
-# Conda
+# Conda or Pip
 
 * `conda config --show` to list all config
 * `conda info` to list general configuration
 * prefer channel_priority to be strict https://conda-forge.org/
+
+## Pip 
+
+```
+$ conda create -n notes_to_self python=3.12
+$ pip install -r requirements.txt
+```
 
 ## Conda for this environment
 
@@ -340,6 +347,17 @@ Use `dask.config.set(temporary_directory='/path/to/tmp')` to set temp folder if 
 $ conda create -n notes_to_self python=3.9 pandas matplotlib jupyterlab altair black pytest
 $ conda create -n notes_to_self python=3.10 pandas matplotlib jupyterlab altair black pytest pytest-cov flake8 pandas-vet flake8-bugbear flake8-variables-names
 $ pytest *.py
+```
+
+## testing and coverage
+
+```
+pytest
+
+coverage run -m pytest 
+coverage html
+firefox htmlcov/index.html
+coverage erase
 ```
 
 # Shell

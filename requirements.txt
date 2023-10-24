@@ -1,0 +1,8 @@
+numpy
+pandas
+altair
+matplotlib
+pytest
+ipython
+black
+coverage

@@ -27,7 +27,7 @@ def format_to_base_10(
     else:
         sgn = ""
     if m >= 0:
-        short_form = num / 1000.0 ** m
+        short_form = num / 1000.0**m
         short_form_template = f"{short_form:.{precision}f}"
         if precision > 0 and trim_0_decimals:
             if short_form == int(short_form):

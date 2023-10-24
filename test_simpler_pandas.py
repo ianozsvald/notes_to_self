@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import pytest
+from datetime import datetime
 
 from simpler_pandas import (
     make_bin_edges,
@@ -12,10 +13,24 @@ from simpler_pandas import (
     label_interval,
     show_df_details,
     show_all,
+    to_datetime_helper,
 )
 from labelling import format_to_base_10
 
 # TODO value_counts_pct has no tests yet
+
+
+def test_to_datetime_helper():
+    res = to_datetime_helper(pd.Series(["Jan 2023", "Feb 2024"]))
+    expected = [datetime(2023, 1, 1), datetime(2024, 2, 1)]
+    assert (res == expected).all()
+
+    # it is harder to do a comparison on a series as we can't also
+    # compare a pd.NaT along with valid values, we need to use .isna()
+    # so instead just check that this gives us 3 elements with 1 NaT
+    res = to_datetime_helper(pd.Series(["Jan 2023", "Feb 2024", "xx"]))
+    assert len(res) == 3
+    assert res.isna().sum() == 1
 
 
 def test_show_all(capsys):
@@ -35,7 +50,7 @@ def test_show_df_details(capsys):
     show_df_details(df)
     captured = capsys.readouterr()
     assert "is view False" in captured.out
-    assert "numeric mixed True" in captured.out
+    assert "is consolidated True, single block True" in captured.out
 
 
 # TODO replace with warns check https://docs.pytest.org/en/latest/how-to/capture-warnings.html#warns

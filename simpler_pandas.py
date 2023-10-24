@@ -25,20 +25,44 @@ dayofweek_dict = {
 }
 
 
+def to_datetime_helper(ser, format="%b %Y", trim_at=10):
+    """Show conversion errors (as NaT) from original strings during `to_datetime` conversion
+    A `format` of `%b %Y` corresponds to e.g. 'Jan 2023'
+    `to_datetime` seems to skip whitespace"""
+    ser_nat = pd.to_datetime(ser, errors="coerce", format=format)
+    # ser_nat can have NaT if error occurred
+    mask = ser_nat.isna()
+    print(f"{mask.sum()} errors seen in conversion")
+    # show the errors, trim if there are too many to show
+    mask_cum = mask.cumsum()
+    if mask.sum() > trim_at:
+        print(f"{mask.sum()} is too many errors, trimming to {trim_at}")
+    mask[mask_cum > trim_at] = False  # get the items up until the trim point
+    for idx, value in ser[mask].items():
+        print(f"Row {idx} '{value}'")
+    return ser_nat
+
+
 def check_series_is_ordered(ser, ascending=True):
     """Check 1 series is ascending"""
-    assert ascending==True, "Haven't done descending yet, nor tested this"
-    return (ser.shift()[1:].reset_index(drop=True) >= ser[:-1].reset_index(drop=True)).all()
+    assert ascending == True, "Haven't done descending yet, nor tested this"
+    return (
+        ser.shift()[1:].reset_index(drop=True) >= ser[:-1].reset_index(drop=True)
+    ).all()
 
 
 def show_df_details(df):
     """Dig into _data hidden attribute, note is_consolidated check can be slow first time"""
-    print(
-        f"""is view {df._data.is_view}, is consolidated {df._data.is_consolidated()}, single block {df._data.is_single_block}"""
-        f""", numeric mixed {df._data.is_numeric_mixed_type}"""
-    )
-    print(f"""{df._data.nblocks} blocks looking like:""")
-    print(df._data.blocks)
+    import warnings
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        # 2023 we get DeprecationWarning: DataFrame._data is deprecated and will be removed in a future version. Use public APIs instead.
+        print(
+            f"""is view {df._data.is_view}, is consolidated {df._data.is_consolidated()}, single block {df._data.is_single_block}"""
+        )
+        print(f"""{df._data.nblocks} blocks looking like:""")
+        print(df._data.blocks)
 
 
 def sanity_check(df):
@@ -201,3 +225,5 @@ if __name__ == "__main__":
     counted_vc = counted.value_counts()
     counted_vc.index = apply_labelling(counted_vc.index, format_to_base_10, prefix="$")
     show_all(counted_vc)
+
+    show_df_details(df)
