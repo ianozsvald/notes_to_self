@@ -44,9 +44,11 @@ def to_datetime_helper(ser, format="%b %Y", trim_at=10):
 
 def check_series_is_ordered(ser, ascending=True):
     """Check 1 series is ascending"""
-    assert ascending == True, "Haven't done descending yet, nor tested this"
+    #assert ascending == True, "Haven't done descending yet, nor tested this"
+    if not ascending:
+        ser = ser[::-1] # reverse the series order
     return (
-        ser.shift()[1:].reset_index(drop=True) >= ser[:-1].reset_index(drop=True)
+        ser[1:].reset_index(drop=True) >= ser[:-1].reset_index(drop=True)
     ).all()
 
 

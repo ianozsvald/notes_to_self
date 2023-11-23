@@ -1,5 +1,7 @@
 # notes_to_self
 
+_Note to Ian_ the source code can be installed both as a library (`simpler`) or an editable install for local development, see instructions further down on `pyproject.toml`.
+
 # Projects
 
 ## Research
@@ -251,6 +253,8 @@ Typically we'd write `pytest` to execute it, there's something weird with being 
 
 `pytest --pdb` drops into the debugger on a failure. 
 
+`pytest -l -v` shows local variables on a test failure and adds verbosity to the output, use `-s` to get stdout (print statements).
+
 ### `coverage`
 
 `$ coverage run -m unittest test_all.py` (or e.g. `discover` to discover all test files) writes an sqlite3 `.coverage` datafile, `$ coverage report html` generates `./htmlcov/` and `firefox htmlcov/index.html` opens the html report. `coverage erase` to wipe db. Notes: https://coverage.readthedocs.io/en/coverage-5.1/
@@ -328,7 +332,9 @@ client # show client details
 
 Use `dask.config.set(temporary_directory='/path/to/tmp')` to set temp folder if we run out of disk (h/t https://stackoverflow.com/questions/40042748/how-to-specify-the-directory-that-dask-uses-for-temporary-files https://docs.dask.org/en/stable/configuration.html). To confirm this open the Web UI (maybe on http://127.0.0.1:8787/status), go to Info, logs, then check early output to see the entry for "Directory".
 
-# Conda or Pip
+# Installing this code
+
+## Conda or Pip
 
 * `conda config --show` to list all config
 * `conda info` to list general configuration
@@ -349,21 +355,52 @@ $ conda create -n notes_to_self python=3.10 pandas matplotlib jupyterlab altair 
 $ pytest *.py
 ```
 
-## building as a package
+## Install into environment as editable or full library
+
+`$ pip install --editable .` will enable tests (e.g. `pytest`) and local development. In `site-packages` we'll get a file like `__editable__.simpler-0.1.pth`.
+
+Use `pip install simpler-0.1-py3-none-any.whl` (in the `/dist/` folder from a `python -m build`) to install into another environment as a regular library.
+
+Uninstall with `pip uninstall simpler` and it'll remove the `.pth` or the entire package if the package was fully installed.
+
+We can monitor an installation by watching file creations:
+
+```
+# watch what's going into this env
+(base) ian@ian-XPS-15-9510:~/miniconda3/envs$ inotifywait -m -r -e 'create,modify,delete' myenv/
+
+~/miniconda3/envs/myenv/lib/python3.11/site-packages$ more __editable__.simpler-0.1.pth 
+/home/ian/workspace/personal/notes_to_self/src
+
+```
+
+
+
+## Creating and building `pyproject.toml`
+
+Useful reading (2023+):
+
+* https://betterprogramming.pub/a-pyproject-toml-developers-cheat-sheet-5782801fb3ed
+* https://packaging.python.org/en/latest/tutorials/packaging-projects/ (I use the `setuptools` code samples)
+  * https://github.com/pypa/sampleproject/tree/main/src/sample (source tree to match the above)
+* https://docs.python.org/3/tutorial/modules.html#packages a little background from python.org
+* https://setuptools.pypa.io/en/latest/userguide/development_mode.html `$ pip install --editable .`
+
+## building a distributable package
 
 ```
 python -m pip install --upgrade build
-python -m build
+python -m build # in ./dist/ builds a .whl and a tar.gz with the version from pyproject.toml
 ```
 
 
 ## testing and coverage
 
 ```
-pytest
+$ pytest # run the tests
+$ pytest tests/test_simpler_pandas.py::test_check_series_is_ordered # run single test
 
-coverage run -m pytest 
-coverage html
+$ pytest --cov=src --cov-report=html --cov-branch
 firefox htmlcov/index.html
 coverage erase
 ```

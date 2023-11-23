@@ -13,12 +13,25 @@ from simpler.simpler_pandas import (
     display,
     label_interval,
     show_df_details,
+    check_series_is_ordered,
     show_all,
     to_datetime_helper,
 )
 from simpler.labelling import format_to_base_10
 
 # TODO value_counts_pct has no tests yet
+
+def test_check_series_is_ordered():
+    ser_asc = pd.Series([1, 2, 3, 4, 5])
+    ser_dsc = pd.Series([5, 4, 3])
+    ser_no_order = pd.Series([99, 1, 98, 2])
+    assert check_series_is_ordered(ser_asc) == True
+    assert check_series_is_ordered(ser_asc[::-1]) == False
+    assert check_series_is_ordered(ser_dsc) == False
+    assert check_series_is_ordered(ser_no_order) == False
+
+    assert check_series_is_ordered(ser_dsc, ascending=False) == True
+    assert check_series_is_ordered(ser_no_order, ascending=False) == False
 
 
 def test_to_datetime_helper():
