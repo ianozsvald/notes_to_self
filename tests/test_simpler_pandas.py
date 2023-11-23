@@ -3,7 +3,8 @@ import pandas as pd
 import pytest
 from datetime import datetime
 
-from simpler_pandas import (
+#from simpler import simple_pandas
+from simpler.simpler_pandas import (
     make_bin_edges,
     bin_series,
     apply_labelling,
@@ -15,7 +16,7 @@ from simpler_pandas import (
     show_all,
     to_datetime_helper,
 )
-from labelling import format_to_base_10
+from simpler.labelling import format_to_base_10
 
 # TODO value_counts_pct has no tests yet
 

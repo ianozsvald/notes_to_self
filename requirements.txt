@@ -3,6 +3,7 @@ pandas
 altair
 matplotlib
 pytest
+pytest-cov
 ipython
 black
 coverage

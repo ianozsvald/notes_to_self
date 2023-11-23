@@ -1,4 +1,4 @@
-from labelling import format_to_base_10
+from simpler.labelling import format_to_base_10
 
 
 def test_format_to_base_10():

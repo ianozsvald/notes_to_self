@@ -2,7 +2,7 @@ from functools import partial
 import pandas as pd
 import numpy as np
 from IPython.display import display
-from labelling import format_to_base_10
+from simpler.labelling import format_to_base_10
 
 # make_bin_edges will turn e.g. "1 2 ... 10" into [-inf, 1, 2, ..., 9, 10, inf]
 # bin_series will take the bin edges and a series and put them into bins

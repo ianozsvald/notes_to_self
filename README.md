@@ -349,6 +349,14 @@ $ conda create -n notes_to_self python=3.10 pandas matplotlib jupyterlab altair 
 $ pytest *.py
 ```
 
+## building as a package
+
+```
+python -m pip install --upgrade build
+python -m build
+```
+
+
 ## testing and coverage
 
 ```
